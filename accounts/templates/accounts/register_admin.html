@@ -1,0 +1,11 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h2>Registro de Administrador</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ user_form.as_p }}
+    {{ admin_form.as_p }}
+    <button type="submit">Registrar Administrador</button>
+  </form>
+{% endblock %}

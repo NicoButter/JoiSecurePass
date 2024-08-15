@@ -1,13 +1,5 @@
 from django import forms
-from .models import CustomUser, Address, Phone, NivelAcceso
-
-class CustomUserForm(forms.ModelForm):
-    class Meta:
-        model = CustomUser
-        fields = ['username', 'email', 'dni', 'numero_legajo', 'nivel_acceso', 'password']
-        widgets = {
-            'password': forms.PasswordInput(),
-        }
+from .models import CustomUser, Address, Phone
 
 class AddressForm(forms.ModelForm):
     class Meta:
@@ -26,6 +18,9 @@ class UserCreationForm(forms.ModelForm):
     class Meta:
         model = CustomUser
         fields = ['username', 'email', 'dni', 'numero_legajo', 'nivel_acceso', 'password']
+        widgets = {
+            'password': forms.PasswordInput(),
+        }
 
     def __init__(self, *args, **kwargs):
         super(UserCreationForm, self).__init__(*args, **kwargs)
@@ -36,6 +31,7 @@ class UserCreationForm(forms.ModelForm):
     def save(self, commit=True):
         user = super(UserCreationForm, self).save(commit=False)
         if commit:
+            user.set_password(self.cleaned_data['password'])
             user.save()
             addresses = self.cleaned_data.get('address_set')
             phones = self.cleaned_data.get('phone_set')

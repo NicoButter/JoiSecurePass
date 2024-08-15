@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}JoiSecurePass{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <header>
+        <h1>JoiSecurePass</h1>
+        <nav>
+            <ul>
+                <li><a href="{% url 'login' %}">Iniciar sesión</a></li>
+                <li><a href="{% url 'register' %}">Registrar</a></li>
+                <!-- Añadir más enlaces si es necesario -->
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; 2024 JoiSecurePass. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>

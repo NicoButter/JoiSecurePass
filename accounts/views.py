@@ -1,8 +1,26 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import login as auth_login, logout as auth_logout
+from django.contrib.auth.forms import AuthenticationForm
 from .forms import UserCreationForm
-from django.shortcuts import render, get_object_or_404, redirect
 from .models import CustomUser
 
+def login_view(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            auth_login(request, user)
+            if user.nivel_acceso.nombre in ['Administrador', 'Operativo']:
+                return redirect('admin_dashboard')  # Redirige al dashboard de administración
+            else:
+                return redirect('personal_registration')  # Redirige al registro de personal
+    else:
+        form = AuthenticationForm()
+    return render(request, 'accounts/login.html', {'form': form})
+
+def logout_view(request):
+    auth_logout(request)
+    return redirect('login')
 
 def register(request):
     if request.method == 'POST':
@@ -24,3 +42,15 @@ def edit_user(request, pk):
     else:
         form = UserCreationForm(instance=user)
     return render(request, 'accounts/edit_user.html', {'form': form})
+
+def user_detail(request, pk):
+    user = get_object_or_404(CustomUser, pk=pk)
+    return render(request, 'accounts/user_detail.html', {'user': user})
+
+def admin_dashboard(request):
+    # Vista para el dashboard de administración
+    return render(request, 'accounts/admin_dashboard.html')
+
+def personal_registration(request):
+    # Vista para el registro de personal
+    return render(request, 'accounts/personal_registration.html')

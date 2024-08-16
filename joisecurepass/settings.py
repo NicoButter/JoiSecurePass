@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "accounts",
+    "attendance",
 ]
 
 MIDDLEWARE = [
@@ -116,7 +117,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-# settings.py
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
 

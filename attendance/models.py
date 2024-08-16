@@ -1,8 +1,8 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings  # Importa settings para usar AUTH_USER_MODEL
 
 class Attendance(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     date = models.DateField()
     check_in_time = models.TimeField(null=True, blank=True)
     check_out_time = models.TimeField(null=True, blank=True)

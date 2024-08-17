@@ -1,10 +1,18 @@
-{% extends 'base.html' %}
+{% extends 'accounts/base.html' %}
+
+{% load static %}
 
 {% block content %}
-<h2>Registrar nuevo usuario</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Registrar</button>
-</form>
+
+<link rel="stylesheet" href="{% static 'accounts/css/register_styles.css' %}">
+
+
+<div class="register-container">
+    <h2 class="register-title">Registrar nuevo usuario</h2>
+    <form method="post" class="register-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="register-button">Registrar</button>
+    </form>
+</div>
 {% endblock %}

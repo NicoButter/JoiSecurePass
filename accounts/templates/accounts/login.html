@@ -1,10 +1,17 @@
-{% extends 'base.html' %}
+{% extends 'accounts/base.html' %}
+
+{% load static %}
 
 {% block content %}
-<h2>Iniciar sesión</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Iniciar sesión</button>
-</form>
+
+<link rel="stylesheet" href="{% static 'accounts/css/login_styles.css' %}">
+
+<div class="login-container">
+    <h2 class="login-title">Iniciar sesión</h2>
+    <form method="post" class="login-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="login-button">Iniciar sesión</button>
+    </form>
+</div>
 {% endblock %}

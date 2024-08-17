@@ -7,6 +7,5 @@
 <p><strong>DNI:</strong> {{ user.dni }}</p>
 <p><strong>Numero de legajo:</strong> {{ user.numero_legajo }}</p>
 <p><strong>Nivel de acceso:</strong> {{ user.nivel_acceso }}</p>
-<!-- Añadir más campos si es necesario -->
 <a href="{% url 'edit_user' user.pk %}">Editar usuario</a>
 {% endblock %}

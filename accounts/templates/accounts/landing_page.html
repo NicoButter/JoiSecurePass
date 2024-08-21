@@ -1,12 +1,12 @@
 {% extends 'accounts/base.html' %}
 
+{% load static %}
+
 {% block content %}
+
+    <link rel="stylesheet" href="{% static 'accounts/css/landing_page_styles.css' %}">
+
     <div class="landing-container">
-        {% comment %} <img src="{% static 'images/bladerunner_background.jpg' %}" alt="Background Image" class="background-image"> {% endcomment %}
-        <div class="welcome-message">
-            <h2>Bienvenido a JoiSecurePass</h2>
-            <a href="{% url 'login' %}" class="button">Iniciar sesión</a>
-            <a href="{% url 'register' %}" class="button">Registrar</a>
-        </div>
+        <img src="{% static 'accounts/img/joi_secure_pass.jpg' %}" alt="Background Image" class="background-image">
     </div>
 {% endblock %}

@@ -1,5 +1,7 @@
 from django import forms
-from .models import CustomUser, Address, Phone
+from django.forms import inlineformset_factory
+
+from .models import CustomUser, Address, Phone, NivelAcceso
 
 class AddressForm(forms.ModelForm):
     class Meta:
@@ -11,34 +13,13 @@ class PhoneForm(forms.ModelForm):
         model = Phone
         fields = ['phone_number', 'phone_type']
 
-class UserCreationForm(forms.ModelForm):
-    address_set = forms.inlineformset_factory(CustomUser, Address, form=AddressForm, extra=1, can_delete=True)
-    phone_set = forms.inlineformset_factory(CustomUser, Phone, form=PhoneForm, extra=1, can_delete=True)
-
+class CustomUserForm(forms.ModelForm):
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'dni', 'numero_legajo', 'nivel_acceso', 'password']
+        fields = ['username', 'email', 'dni', 'numero_legajo', 'nivel_acceso', 'profile_image']
         widgets = {
-            'password': forms.PasswordInput(),
+            'nivel_acceso': forms.Select(choices=[(nivel.id, nivel.nombre) for nivel in NivelAcceso.objects.all()]),
         }
 
-    def __init__(self, *args, **kwargs):
-        super(UserCreationForm, self).__init__(*args, **kwargs)
-        if self.instance and self.instance.pk:
-            self.fields['address_set'].queryset = Address.objects.filter(user=self.instance)
-            self.fields['phone_set'].queryset = Phone.objects.filter(user=self.instance)
-
-    def save(self, commit=True):
-        user = super(UserCreationForm, self).save(commit=False)
-        if commit:
-            user.set_password(self.cleaned_data['password'])
-            user.save()
-            addresses = self.cleaned_data.get('address_set')
-            phones = self.cleaned_data.get('phone_set')
-            for address in addresses:
-                address.user = user
-                address.save()
-            for phone in phones:
-                phone.user = user
-                phone.save()
-        return user
+AddressFormSet = inlineformset_factory(CustomUser, Address, form=AddressForm, extra=1, can_delete=True, max_num=5)
+PhoneFormSet = inlineformset_factory(CustomUser, Phone, form=PhoneForm, extra=1, can_delete=True, max_num=5)

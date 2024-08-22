@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib.auth.forms import AuthenticationForm
-from .forms import UserCreationForm
+from .forms import CustomUserForm, AddressFormSet, PhoneFormSet
 from .models import CustomUser
 
 def landing_page(request):
@@ -27,24 +27,66 @@ def logout_view(request):
 
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
+        user_form = CustomUserForm(request.POST)
+        address_formset = AddressFormSet(request.POST, instance=None)
+        phone_formset = PhoneFormSet(request.POST, instance=None)
+        
+        if user_form.is_valid() and address_formset.is_valid() and phone_formset.is_valid():
+            user = user_form.save()
+            addresses = address_formset.save(commit=False)
+            phones = phone_formset.save(commit=False)
+            
+            for address in addresses:
+                address.user = user
+                address.save()
+                
+            for phone in phones:
+                phone.user = user
+                phone.save()
+            
             return redirect('login')
     else:
-        form = UserCreationForm()
-    return render(request, 'accounts/register.html', {'form': form})
+        user_form = CustomUserForm()
+        address_formset = AddressFormSet(instance=None)
+        phone_formset = PhoneFormSet(instance=None)
+    
+    return render(request, 'accounts/register.html', {
+        'user_form': user_form,
+        'address_formset': address_formset,
+        'phone_formset': phone_formset,
+    })
 
 def edit_user(request, pk):
     user = get_object_or_404(CustomUser, pk=pk)
     if request.method == 'POST':
-        form = UserCreationForm(request.POST, instance=user)
-        if form.is_valid():
-            form.save()
+        user_form = CustomUserForm(request.POST, instance=user)
+        address_formset = AddressFormSet(request.POST, instance=user)
+        phone_formset = PhoneFormSet(request.POST, instance=user)
+        
+        if user_form.is_valid() and address_formset.is_valid() and phone_formset.is_valid():
+            user = user_form.save()
+            addresses = address_formset.save(commit=False)
+            phones = phone_formset.save(commit=False)
+            
+            for address in addresses:
+                address.user = user
+                address.save()
+                
+            for phone in phones:
+                phone.user = user
+                phone.save()
+            
             return redirect('user_detail', pk=user.pk)
     else:
-        form = UserCreationForm(instance=user)
-    return render(request, 'accounts/edit_user.html', {'form': form})
+        user_form = CustomUserForm(instance=user)
+        address_formset = AddressFormSet(instance=user)
+        phone_formset = PhoneFormSet(instance=user)
+    
+    return render(request, 'accounts/edit_user.html', {
+        'user_form': user_form,
+        'address_formset': address_formset,
+        'phone_formset': phone_formset,
+    })
 
 def user_detail(request, pk):
     user = get_object_or_404(CustomUser, pk=pk)

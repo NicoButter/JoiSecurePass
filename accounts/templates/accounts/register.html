@@ -8,10 +8,21 @@
 
 <div class="register-container">
     <h2 class="register-title">Registrar nuevo usuario</h2>
-    <form method="post" class="register-form">
+    <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="register-button">Registrar</button>
+        {{ user_form.as_p }}
+        
+        {{ address_formset.management_form }}
+        {% for form in address_formset %}
+            {{ form.as_p }}
+        {% endfor %}
+        
+        {{ phone_formset.management_form }}
+        {% for form in phone_formset %}
+            {{ form.as_p }}
+        {% endfor %}
+        
+        <button type="submit">Registrar</button>
     </form>
 </div>
 {% endblock %}

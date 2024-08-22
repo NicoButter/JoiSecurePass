@@ -4,7 +4,18 @@
 <h2>Editar usuario</h2>
 <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Guardar cambios</button>
+    {{ user_form.as_p }}
+    
+    {{ address_formset.management_form }}
+    {% for form in address_formset %}
+        {{ form.as_p }}
+    {% endfor %}
+    
+    {{ phone_formset.management_form }}
+    {% for form in phone_formset %}
+        {{ form.as_p }}
+    {% endfor %}
+    
+    <button type="submit">Guardar Cambios</button>
 </form>
 {% endblock %}

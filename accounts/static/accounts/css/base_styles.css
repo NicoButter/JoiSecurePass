@@ -14,15 +14,23 @@ h1, h2 {
 }
 
 header {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center; 
     position: fixed;
-    padding: 20px;
-    text-align: center;
     top: 0;
     left: 0;
     width: 100%;
+    /* height: auto; */
     z-index: 100;
     background-color: rgba(0, 0, 0, 0.8); 
-    padding: 10px 0;
+    padding: 10px 20px;
+    flex-wrap: nowrap;
+}
+
+.header-banner img {
+    max-width: 70%; 
+    height: auto;
 }
 
 nav ul {
@@ -30,18 +38,21 @@ nav ul {
     padding: 0;
     margin: 0;
     display: flex;
-    justify-content: center;
+    justify-content: flex-end; 
 }
 
 nav ul li {
-    margin: 0 15px;
+    margin-left: 40px; 
 }
 
 nav ul li a {
+    margin-right: 40px;
     color: #00bcd4; 
     text-decoration: none;
     font-weight: bold;
     transition: color 0.3s ease-in-out;
+    white-space: nowrap;
+    font-size: 16px;
 }
 
 nav ul li a:hover {
@@ -49,9 +60,7 @@ nav ul li a:hover {
 }
 
 main { 
-    margin-top: 60px;
-    margin-bottom: 40px; 
-    height: calc(100vh - 100px); 
+    min-height: calc(100vh - 120px); 
     display: flex;
     align-items: center;
     justify-content: center;
@@ -67,7 +76,6 @@ footer {
     background-color: rgba(0, 0, 0, 0.8); 
     padding: 10px 0;
     text-align: center;
-    padding: 10px;
 }
 
 footer p {
@@ -75,10 +83,3 @@ footer p {
     font-size: 0.9em;
 }
 
-a {
-    color: #00bcd4;
-}
-
-a:hover {
-    color: #ff4081;
-}

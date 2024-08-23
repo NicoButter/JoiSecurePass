@@ -8,7 +8,7 @@ class CustomUser(AbstractUser):
     dni = models.CharField(max_length=20, unique=True, blank=True, null=True)
     numero_legajo = models.CharField(max_length=50, unique=True, blank=True, null=True)
     nivel_acceso = models.ForeignKey('NivelAcceso', on_delete=models.SET_NULL, null=True, blank=True)
-    profile_image = models.ImageField(upload_to='profile_images/', null=True, blank=True)  # Campo para la imagen del perfil
+    profile_image = models.ImageField(upload_to='profile_images/', null=True, blank=True)
 
     def __str__(self):
         return self.username

@@ -14,12 +14,13 @@ def login_view(request):
             user = form.get_user()
             auth_login(request, user)
             if user.nivel_acceso.nombre in ['Administrador', 'Operativo']:
-                return redirect('admin_dashboard')  # Redirige al dashboard de administración
+                return redirect('admin_dashboard')
             else:
-                return redirect('personal_registration')  # Redirige al registro de personal
+                return redirect('attendance/record_attendance')
     else:
         form = AuthenticationForm()
     return render(request, 'accounts/login.html', {'form': form})
+
 
 def logout_view(request):
     auth_logout(request)

@@ -1,7 +1,8 @@
 from django import forms
 from .models import Attendance
-from django.conf import settings
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
 
 class AttendanceForm(forms.ModelForm):
     class Meta:
@@ -15,4 +16,4 @@ class AttendanceForm(forms.ModelForm):
 
 class AttendanceSearchForm(forms.Form):
     date = forms.DateField(required=False, widget=forms.DateInput(attrs={'type': 'date'}))
-    user = forms.ModelChoiceField(queryset=settings.AUTH_USER_MODEL.objects.all(), required=False)
+    user = forms.ModelChoiceField(queryset=User.objects.all(), required=False)

@@ -1,10 +1,41 @@
-{% extends 'base_generic.html' %}
+{% extends 'base.html' %}
 
 {% block content %}
-  <h2>Record Attendance</h2>
-  <form method="post">
+<h2>Record Attendance</h2>
+<form id="attendance-form" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Submit</button>
-  </form>
+    <button type="submit">Registrar Asistencia</button>
+</form>
+
+<video id="video" width="320" height="240" autoplay></video>
+<canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+
+<script>
+    document.getElementById('attendance-form').addEventListener('submit', function(event) {
+        event.preventDefault();  
+
+        const formData = new FormData(this);
+
+        fetch('{% url "record_attendance" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const audio = new Audio('ruta/a/tu/sonido.mp3');
+
+            alert(data.message);
+
+            document.getElementById('attendance-form').reset();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+</script>
+
 {% endblock %}

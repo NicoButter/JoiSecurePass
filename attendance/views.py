@@ -1,13 +1,17 @@
-from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from django.shortcuts import render
 from .models import Attendance
 from .forms import AttendanceForm, AttendanceSearchForm
 
 def record_attendance(request):
     if request.method == 'POST':
-        form = AttendanceForm(request.POST, request.FILES)  # Incluye request.FILES para archivos
+        form = AttendanceForm(request.POST, request.FILES)  
         if form.is_valid():
             form.save()
-            return redirect('attendance_record_success')  # Asegúrate de definir esta URL
+            
+            return JsonResponse({'message': '¡Asistencia registrada correctamente!'})
+        else:
+            return JsonResponse({'message': 'Error al registrar la asistencia. Verifica los datos ingresados.'}, status=400)
     else:
         form = AttendanceForm()
     return render(request, 'attendance/record_attendance.html', {'form': form})

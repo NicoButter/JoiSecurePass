@@ -7,6 +7,8 @@ from .models import CustomUser
 def landing_page(request):
     return render(request, 'accounts/landing_page.html')
 
+# --------------------------------------------------------------------------------------------
+
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
@@ -16,15 +18,18 @@ def login_view(request):
             if user.nivel_acceso.nombre in ['Administrador', 'Operativo']:
                 return redirect('admin_dashboard')
             else:
-                return redirect('attendance/record_attendance')
+                return redirect('record_attendance')
     else:
         form = AuthenticationForm()
     return render(request, 'accounts/login.html', {'form': form})
 
+# --------------------------------------------------------------------------------------------
 
 def logout_view(request):
     auth_logout(request)
     return redirect('login')
+
+# --------------------------------------------------------------------------------------------
 
 def register(request):
     if request.method == 'POST':
@@ -56,6 +61,8 @@ def register(request):
         'address_formset': address_formset,
         'phone_formset': phone_formset,
     })
+
+# --------------------------------------------------------------------------------------------
 
 def edit_user(request, pk):
     user = get_object_or_404(CustomUser, pk=pk)
@@ -89,13 +96,19 @@ def edit_user(request, pk):
         'phone_formset': phone_formset,
     })
 
+# --------------------------------------------------------------------------------------------
+
 def user_detail(request, pk):
     user = get_object_or_404(CustomUser, pk=pk)
     return render(request, 'accounts/user_detail.html', {'user': user})
 
+# --------------------------------------------------------------------------------------------
+
 def admin_dashboard(request):
     # Vista para el dashboard de administración
     return render(request, 'accounts/admin_dashboard.html')
+
+# --------------------------------------------------------------------------------------------
 
 def personal_registration(request):
     # Vista para el registro de personal

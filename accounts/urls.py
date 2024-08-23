@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+# from attendance import views
 
 urlpatterns = [
     path('', views.landing_page, name='landing_page'),
@@ -10,4 +11,5 @@ urlpatterns = [
     path('admin_dashboard/', views.admin_dashboard, name='admin_dashboard'),
     path('logout/', views.logout_view, name='logout'),
     path('personal_registration/', views.personal_registration, name='personal_registration'),
+    # path('record_attendance/', views.record_attendance, name='record_attendance'),
 ]

@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'accounts/base.html' %}
 
 {% block content %}
 <h2>Record Attendance</h2>
@@ -12,10 +12,29 @@
 <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
 
 <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const context = canvas.getContext('2d');
+
+    // Solicitar acceso a la cámara
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+            video.srcObject = stream;
+        })
+        .catch(err => {
+            console.error("Error accessing the camera: ", err);
+        });
+
     document.getElementById('attendance-form').addEventListener('submit', function(event) {
         event.preventDefault();  
 
+        // Capturar el fotograma actual del video
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const frameData = canvas.toDataURL('image/jpeg');
+
+        // Crear un FormData y agregar la imagen capturada
         const formData = new FormData(this);
+        formData.append('image', frameData);
 
         fetch('{% url "record_attendance" %}', {
             method: 'POST',
@@ -27,6 +46,7 @@
         .then(response => response.json())
         .then(data => {
             const audio = new Audio('ruta/a/tu/sonido.mp3');
+            audio.play();  // Reproduce el sonido
 
             alert(data.message);
 

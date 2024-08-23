@@ -3,7 +3,7 @@ import numpy as np
 from PIL import Image
 import io
 from django.core.files.base import ContentFile
-from .models import CustomUser, Attendance
+from .attendance.models import CustomUser, Attendance
 
 def recognize_face(image_data):
     # Convertir la imagen base64 a imagen

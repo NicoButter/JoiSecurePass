@@ -24,11 +24,13 @@
         <nav>
             <ul>
                 <li><a href="{% url 'login' %}">Iniciar sesión</a></li>
-                {% comment %} <li><a href="{% url 'employee_register' %}">Registrar acceso de empleados</a></li> {% endcomment %}
-                <!-- Este enlace solo se mostrará si el usuario es un administrador -->
-                {% comment %} {% if user.is_authenticated and user.role in [1, 2] %}
-                <li><a href="{% url 'admin_employee_register' %}">Registrar nuevo empleado</a></li>
-                {% endif %} {% endcomment %}
+                {% if user.is_authenticated %}
+                    {% if user.nivel_acceso.nombre == 'Administrador' %}
+                        <li><a href="{% url 'admin_employee_register' %}">Registrar nuevo empleado</a></li>
+                    {% elif user.nivel_acceso.nombre == 'Operativo' %}
+                        <li><a href="{% url 'operativo_dashboard' %}">Dashboard Operativo</a></li>
+            {% endif %}
+        {% endif %}
             </ul>
         </nav>
     </header>

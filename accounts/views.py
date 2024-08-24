@@ -15,13 +15,20 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             auth_login(request, user)
-            if user.nivel_acceso.nombre in ['Administrador', 'Operativo']:
+            if user.nivel_acceso.nombre == 'Administrador':
                 return redirect('admin_dashboard')
+            elif user.nivel_acceso.nombre == 'Operativo':
+                return redirect('operativo_dashboard')
             else:
                 return redirect('record_attendance')
     else:
         form = AuthenticationForm()
     return render(request, 'accounts/login.html', {'form': form})
+
+# --------------------------------------------------------------------------------------------
+
+def operativo_dashboard(request):
+    return render(request, 'attendance/operativo_dashboard.html')
 
 # --------------------------------------------------------------------------------------------
 

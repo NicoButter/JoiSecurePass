@@ -1,0 +1,16 @@
+{% extends 'accounts/base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'accounts/css/operativo_dashboard_styles.css' %}">
+
+<div class="dashboard">
+    <h2>Operativo Dashboard</h2>
+    <a href="{% url 'user_crud' %}">Gestión de Usuarios</a>
+    <a href="{% url 'reportes' %}">Reportes</a>
+    <!-- Añade más herramientas administrativas según sea necesario -->
+</div>
+
+{% endblock %}

@@ -1,57 +1,32 @@
-.register-container {
-    background-color: rgba(20, 20, 20, 0.9);
-    padding: 2em;
+.form-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ddd;
     border-radius: 10px;
-    box-shadow: 0 0 20px #ff00ff;
-    text-align: center;
-    width: 300px;
-    margin-top: 2em;
 }
-
-.register-title {
-    color: #ff66ff;
-    margin-bottom: 1em;
-    font-size: 1.8em;
-    letter-spacing: 1.5px;
+.form-group {
+    margin-bottom: 15px;
 }
-
-.register-form {
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+}
+.form-group img {
+    max-width: 200px;
+    max-height: 200px;
+}
+.form-group .form-inline {
     display: flex;
-    flex-direction: column;
-    gap: 1em;
+    align-items: center;
 }
-
-input[type="text"],
-input[type="password"],
-input[type="email"] {
-    padding: 0.5em;
-    background-color: #141414;
-    border: 1px solid #333;
-    border-radius: 5px;
-    color: #d1d1d1;
-    font-size: 1em;
-}
-
-input[type="text"]:focus,
-input[type="password"]:focus,
-input[type="email"]:focus {
-    outline: none;
-    border-color: #ff66ff;
-    box-shadow: 0 0 5px #ff66ff;
-}
-
-.register-button {
-    padding: 0.7em;
-    background-color: #ff66ff;
-    border: none;
-    border-radius: 5px;
-    color: #0b0c0d;
-    font-weight: bold;
-    font-size: 1.1em;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.register-button:hover {
-    background-color: #cc33cc;
+.form-group .form-inline input[type="file"] {
+    margin-left: 10px;
 }

@@ -1,0 +1,21 @@
+.dashboard {
+    margin: 20px;
+}
+.dashboard h2 {
+    margin-bottom: 20px;
+    font-family: 'Exo 2', sans-serif;
+    color: #333;
+}
+.dashboard a {
+    display: block;
+    margin: 10px 0;
+    padding: 10px;
+    background-color: #f4f4f4;
+    text-decoration: none;
+    color: #333;
+    border-radius: 5px;
+    font-family: 'Raleway', sans-serif;
+}
+.dashboard a:hover {
+    background-color: #ddd;
+}

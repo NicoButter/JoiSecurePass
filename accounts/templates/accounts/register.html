@@ -1,28 +1,84 @@
-{% extends 'accounts/base.html' %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Empleados</title>
+  
+    <link rel="stylesheet" href="{% static 'accounts/css/base_styles.css' %}">
 
-{% load static %}
+</head>
+<body>
+    <h2>Registro de Empleados</h2>
+    <div class="form-container">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">Nombre de Usuario:</label>
+                {{ user_form.username.label_tag }}
+                {{ user_form.username }}
+            </div>
 
-{% block content %}
+            <div class="form-group">
+                <label for="email">Correo Electrónico:</label>
+                {{ user_form.email.label_tag }}
+                {{ user_form.email }}
+            </div>
 
-<link rel="stylesheet" href="{% static 'accounts/css/register_styles.css' %}">
+            <div class="form-group">
+                <label for="dni">DNI:</label>
+                {{ user_form.dni.label_tag }}
+                {{ user_form.dni }}
+            </div>
 
-<div class="register-container">
-    <h2 class="register-title">Registrar nuevo usuario</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ user_form.as_p }}
-        
-        {{ address_formset.management_form }}
-        {% for form in address_formset %}
-            {{ form.as_p }}
-        {% endfor %}
-        
-        {{ phone_formset.management_form }}
-        {% for form in phone_formset %}
-            {{ form.as_p }}
-        {% endfor %}
-        
-        <button type="submit">Registrar</button>
-    </form>
-</div>
-{% endblock %}
+            <div class="form-group">
+                <label for="numero_legajo">Número de Legajo:</label>
+                {{ user_form.numero_legajo.label_tag }}
+                {{ user_form.numero_legajo }}
+            </div>
+
+            <div class="form-group">
+                <label for="nivel_acceso">Nivel de Acceso:</label>
+                {{ user_form.nivel_acceso.label_tag }}
+                {{ user_form.nivel_acceso }}
+            </div>
+
+            <div class="form-group">
+                <label for="profile_image">Imagen de Perfil:</label>
+                {{ user_form.profile_image.label_tag }}
+                {{ user_form.profile_image }}
+                {% if user_form.instance.profile_image %}
+                    <div class="form-inline">
+                        <img src="{{ user_form.instance.profile_image.url }}" alt="Imagen de Perfil">
+                    </div>
+                {% endif %}
+            </div>
+
+            <h3>Dirección:</h3>
+            {{ address_formset.management_form }}
+            {% for form in address_formset %}
+                <div class="form-group">
+                    <label for="{{ form.id_for_label }}">Dirección:</label>
+                    {{ form.street_address.label_tag }} {{ form.street_address }}
+                    {{ form.city.label_tag }} {{ form.city }}
+                    {{ form.state.label_tag }} {{ form.state }}
+                    {{ form.postal_code.label_tag }} {{ form.postal_code }}
+                    {{ form.country.label_tag }} {{ form.country }}
+                </div>
+            {% endfor %}
+
+            <h3>Teléfonos:</h3>
+            {{ phone_formset.management_form }}
+            {% for form in phone_formset %}
+                <div class="form-group">
+                    <label for="{{ form.id_for_label }}">Teléfono:</label>
+                    {{ form.phone_number.label_tag }} {{ form.phone_number }}
+                    {{ form.phone_type.label_tag }} {{ form.phone_type }}
+                </div>
+            {% endfor %}
+
+            <button type="submit">Registrar</button>
+        </form>
+    </div>
+</body>
+</html>

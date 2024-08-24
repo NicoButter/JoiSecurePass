@@ -1,61 +1,72 @@
-{% extends 'accounts/base.html' %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Record Attendance</title>
+    <style>
+        #video {
+            border: 1px solid black;
+        }
+        #canvas {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h2>Record Attendance</h2>
+    <form id="attendance-form">
+        {% csrf_token %}
+        <button type="button" id="capture-btn">Capturar Imagen</button>
+        <p id="result-message"></p>
+    </form>
 
-{% block content %}
-<h2>Record Attendance</h2>
-<form id="attendance-form" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Registrar Asistencia</button>
-</form>
+    <video id="video" width="320" height="240" autoplay></video>
+    <canvas id="canvas" width="320" height="240"></canvas>
 
-<video id="video" width="320" height="240" autoplay></video>
-<canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+        const resultMessage = document.getElementById('result-message');
 
-<script>
-    const video = document.getElementById('video');
-    const canvas = document.getElementById('canvas');
-    const context = canvas.getContext('2d');
+        // Acceder a la cámara del usuario
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream; // Asignar el flujo de video al elemento <video>
+            })
+            .catch(err => {
+                console.error("Error accessing the camera: ", err);
+                resultMessage.textContent = 'No se pudo acceder a la cámara.';
+            });
 
-    // Solicitar acceso a la cámara
-    navigator.mediaDevices.getUserMedia({ video: true })
-        .then(stream => {
-            video.srcObject = stream;
-        })
-        .catch(err => {
-            console.error("Error accessing the camera: ", err);
+        // Capturar la imagen cuando se presiona el botón
+        document.getElementById('capture-btn').addEventListener('click', function() {
+            // Dibujar el cuadro de video en el canvas
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const frameData = canvas.toDataURL('image/jpeg');
+
+            // Enviar la imagen capturada al servidor
+            fetch('{% url "record_attendance" %}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `image=${encodeURIComponent(frameData)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    resultMessage.textContent = data.error;
+                } else {
+                    resultMessage.textContent = data.message;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                resultMessage.textContent = 'Ocurrió un error al procesar la solicitud.';
+            });
         });
-
-    document.getElementById('attendance-form').addEventListener('submit', function(event) {
-        event.preventDefault();  
-
-        // Capturar el fotograma actual del video
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-        const frameData = canvas.toDataURL('image/jpeg');
-
-        // Crear un FormData y agregar la imagen capturada
-        const formData = new FormData(this);
-        formData.append('image', frameData);
-
-        fetch('{% url "record_attendance" %}', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRFToken': '{{ csrf_token }}',
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            const audio = new Audio('ruta/a/tu/sonido.mp3');
-            audio.play();  // Reproduce el sonido
-
-            alert(data.message);
-
-            document.getElementById('attendance-form').reset();
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-    });
-</script>
-
-{% endblock %}
+    </script>
+</body>
+</html>

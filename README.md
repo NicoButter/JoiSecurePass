@@ -95,9 +95,9 @@ Crea una nueva rama.
 Realiza tus cambios.
 Envía una solicitud de pull.
 
-## Licencia
-# Este proyecto está bajo la licencia MIT.
+# Licencia
+## Este proyecto está bajo la licencia MIT.
 
-# Si tienes alguna pregunta o sugerencia sobre este proyecto, no dudes en abrir un issue en el repositorio o contactarme a través de nicobutter@gmail.com.
+### Si tienes alguna pregunta o sugerencia sobre este proyecto, no dudes en abrir un issue en el repositorio o contactarme a través de nicobutter@gmail.com.
 
 Este proyecto está bajo la licencia MIT.

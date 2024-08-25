@@ -27,18 +27,17 @@
 ## Instalación y configuración
 1. **Clonar el repositorio**:
    ```bash
-   git clone https://NicoButter/JoiSecurePassoiSecurePass
+      git clone https://NicoButter/JoiSecurePassoiSecurePass
+   ...`
 
-   Crear y activar el entorno virtual:
-
+2. Crear y activar el entorno virtual:
 ```bash
-python -m venv venv
-source venv/bin/activate
+   python -m venv venv
+   source venv/bin/activate
 ...`
 
+3.Instalar las dependencias:
 ```bash
-Instalar las dependencias:
-
 pip install -r requirements.txt
 ...`
 

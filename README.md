@@ -1,7 +1,7 @@
-# JoiSecurePass: Sistema de Control de Acceso Basado en Reconocimiento Facial y NFC
+# JoiSecurePass 
 
-<<<<<<< HEAD
-=======
+## Sistema de Control de Acceso Basado en Reconocimiento Facial y NFC
+
 ![](images/joisecurepass.png)
 
 >>>>>>> ededa7ff7f9a63b234791c325cc15a0bc6020e20

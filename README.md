@@ -1,5 +1,7 @@
 # JoiSecurePass: Sistema de Control de Acceso Basado en Reconocimiento Facial y NFC
 
+![](images/joisecurepass.png)
+
 ## Descripción general
 **JoiSecurePass** es una aplicación web desarrollada con **Django** y **PostgreSQL** diseñada para gestionar de manera eficiente el control de acceso del personal en una organización. El sistema combina tecnologías de reconocimiento facial y **NFC** para registrar los ingresos y salidas de los empleados, generando reportes detallados sobre su actividad laboral.
 
@@ -57,6 +59,6 @@ python manage.py runserver
 Contribuciones
 ¡Las contribuciones son bienvenidas! Si deseas contribuir a este proyecto, por favor, sigue estos pasos:
 
-### Si tienes alguna pregunta o sugerencia sobre este proyecto, no dudes en abrir un issue en el repositorio o contactarme a través de nicobutter@gmail.com.
+## Si tienes alguna pregunta o sugerencia sobre este proyecto, no dudes en abrir un issue en el repositorio o contactarme a través de nicobutter@gmail.com.
 
 Este proyecto está bajo la licencia MIT.

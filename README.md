@@ -14,8 +14,6 @@
 - **Django**: Framework web para el desarrollo de la aplicación.
 - **PostgreSQL**: Base de datos relacional para almacenar la información.
 - **OpenCV**: Biblioteca de visión por computadora para el reconocimiento facial.
-- **[Biblioteca para NFC]**: Especifica la biblioteca utilizada para la interacción con dispositivos NFC.
-- **[Otras bibliotecas relevantes]**: Menciona otras bibliotecas utilizadas, como por ejemplo para la generación de reportes.
 
 ## Requisitos del sistema
 - **Sistema operativo**: OpenSUSE
@@ -26,37 +24,35 @@
 
 ## Instalación y configuración
 1. **Clonar el repositorio**:
-   ```bash
+   ```sh
       git clone https://NicoButter/JoiSecurePassoiSecurePass
-   ...`
+   ```
 
 2. Crear y activar el entorno virtual:
-```bash
+```sh
    python -m venv venv
    source venv/bin/activate
-...`
+```
 
-3.Instalar las dependencias:
-```bash
+3. Instalar las dependencias:
+```sh
 pip install -r requirements.txt
-...`
+```
 
-
-Configurar la base de datos:
+4. Configurar la base de datos:
 
 # Editar el archivo settings.py con los datos de tu base de datos.
 
-`...
 Ejecutar las migraciones:
-
+```sh
 python manage.py migrate
-...`
+```
 
-`...
-Iniciar el servidor de desarrollo:
+# Iniciar el servidor de desarrollo:
 
+```sh
 python manage.py runserver
-...`
+```
 
 Contribuciones
 ¡Las contribuciones son bienvenidas! Si deseas contribuir a este proyecto, por favor, sigue estos pasos:

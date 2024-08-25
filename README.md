@@ -57,9 +57,6 @@ python manage.py runserver
 Contribuciones
 ¡Las contribuciones son bienvenidas! Si deseas contribuir a este proyecto, por favor, sigue estos pasos:
 
-Forkea el repositorio.
-Crea una nueva rama.
-Realiza tus cambios.
-Envía una solicitud de pull.
-Licencia
+### Si tienes alguna pregunta o sugerencia sobre este proyecto, no dudes en abrir un issue en el repositorio o contactarme a través de nicobutter@gmail.com.
+
 Este proyecto está bajo la licencia MIT.

@@ -27,7 +27,8 @@
 
 
 ## Instalación y configuración
-1. **Clonar el repositorio**:
+
+1. Clonar el repositorio:
    ```sh
       git clone https://[tu_repositorio] JoiSecurePass
    ```
@@ -38,22 +39,22 @@
       source venv/bin/activate
    ```
    
-Instalar las dependencias:
+3. Instalar las dependencias:
    ```sh
       pip install -r requirements.txt
    ```
 
-3. Configurar la base de datos:
+4. Configurar la base de datos:
 
    Editar el archivo settings.py con los datos de tu base de datos PostgreSQL
 
 
-4. Ejecutar las migraciones:
+5. Ejecutar las migraciones:
    ```sh
       python manage.py migrate
    ```
 
-Iniciar el servidor de desarrollo:
+6. Iniciar el servidor de desarrollo:
    ```sh
       python manage.py runserver
    ```
@@ -62,32 +63,7 @@ Iniciar el servidor de desarrollo:
       git clone https://NicoButter/JoiSecurePassoiSecurePass
    ```
 
-2. Crear y activar el entorno virtual:
-   ```sh
-     python -m venv venv
-      source venv/bin/activate
-   ```
-
-3. Instalar las dependencias:
-   ```sh
-      pip install -r requirements.txt
-   ```
-
-4. Configurar la base de datos:
-
-# Editar el archivo settings.py con los datos de tu base de datos.
-
-Ejecutar las migraciones:
-   ```sh
-      python manage.py migrate
-   ```
-
-# Iniciar el servidor de desarrollo:
-   ```sh
-      python manage.py runserver
-   ```
-
-Contribuciones
+## Contribuciones
 ¡Las contribuciones son bienvenidas! Si deseas contribuir a este proyecto, por favor, sigue estos pasos:
 
 Forkea el repositorio.
@@ -100,4 +76,3 @@ Envía una solicitud de pull.
 
 ### Si tienes alguna pregunta o sugerencia sobre este proyecto, no dudes en abrir un issue en el repositorio o contactarme a través de nicobutter@gmail.com.
 
-Este proyecto está bajo la licencia MIT.

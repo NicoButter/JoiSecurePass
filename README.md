@@ -39,9 +39,9 @@
    ```
    
 Instalar las dependencias:
-```sh
-pip install -r requirements.txt
-```
+   ```sh
+      pip install -r requirements.txt
+   ```
 
 3. Configurar la base de datos:
 
@@ -49,10 +49,9 @@ pip install -r requirements.txt
 
 
 4. Ejecutar las migraciones:
-
-```sh
-python manage.py migrate
-```
+   ```sh
+      python manage.py migrate
+   ```
 
 Iniciar el servidor de desarrollo:
    ```sh
@@ -64,30 +63,29 @@ Iniciar el servidor de desarrollo:
    ```
 
 2. Crear y activar el entorno virtual:
-```sh
-   python -m venv venv
-   source venv/bin/activate
-```
+   ```sh
+     python -m venv venv
+      source venv/bin/activate
+   ```
 
 3. Instalar las dependencias:
-```sh
-pip install -r requirements.txt
-```
+   ```sh
+      pip install -r requirements.txt
+   ```
 
 4. Configurar la base de datos:
 
 # Editar el archivo settings.py con los datos de tu base de datos.
 
 Ejecutar las migraciones:
-```sh
-python manage.py migrate
-```
+   ```sh
+      python manage.py migrate
+   ```
 
 # Iniciar el servidor de desarrollo:
-
-```sh
-python manage.py runserver
-```
+   ```sh
+      python manage.py runserver
+   ```
 
 Contribuciones
 ¡Las contribuciones son bienvenidas! Si deseas contribuir a este proyecto, por favor, sigue estos pasos:
@@ -97,9 +95,9 @@ Crea una nueva rama.
 Realiza tus cambios.
 Envía una solicitud de pull.
 
-Licencia
-Este proyecto está bajo la licencia MIT.
+## Licencia
+# Este proyecto está bajo la licencia MIT.
 
-## Si tienes alguna pregunta o sugerencia sobre este proyecto, no dudes en abrir un issue en el repositorio o contactarme a través de nicobutter@gmail.com.
+# Si tienes alguna pregunta o sugerencia sobre este proyecto, no dudes en abrir un issue en el repositorio o contactarme a través de nicobutter@gmail.com.
 
 Este proyecto está bajo la licencia MIT.

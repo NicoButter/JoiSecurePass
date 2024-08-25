@@ -4,7 +4,6 @@
 
 ![](images/joisecurepass.png)
 
->>>>>>> ededa7ff7f9a63b234791c325cc15a0bc6020e20
 ## Descripción general
 **JoiSecurePass** es una aplicación web desarrollada con **Django** y **PostgreSQL** diseñada para gestionar de manera eficiente el control de acceso del personal en una organización. El sistema combina tecnologías de reconocimiento facial y **NFC** para registrar los ingresos y salidas de los empleados, generando reportes detallados sobre su actividad laboral.
 

@@ -1,80 +1,261 @@
-.login-container {
-    margin-top: 15%;
-    background-color: rgba(20, 20, 20, 0.9);
-    padding: 4em; 
-    border-radius: 10px;
-    box-shadow: 0 0 20px #0ff;
-    text-align: center;
-    width: 300px;
+/* =======================================================
+   Login Page — JoiSecurePass
+   ======================================================= */
+
+.login-wrapper {
+    position: relative;
+    min-height: calc(100vh - 120px);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    box-sizing: border-box;
+    overflow: hidden;
 }
+
+/* ---- Background ---- */
+.bg-grid {
+    position: fixed;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(0, 188, 212, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 188, 212, 0.04) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.bg-orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.09;
+    pointer-events: none;
+    z-index: 0;
+    animation: orbFloat 12s ease-in-out infinite;
+}
+
+.bg-orb-1 {
+    width: 480px; height: 480px;
+    background: radial-gradient(circle, #00bcd4, transparent 70%);
+    top: -140px; left: -140px;
+}
+
+.bg-orb-2 {
+    width: 380px; height: 380px;
+    background: radial-gradient(circle, #ff4081, transparent 70%);
+    bottom: -100px; right: -100px;
+    animation-delay: -6s;
+}
+
+@keyframes orbFloat {
+    0%, 100% { transform: translate(0, 0); }
+    50%       { transform: translate(20px, -20px); }
+}
+
+/* ---- Card ---- */
+.login-card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 420px;
+    padding: 44px 40px 36px;
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 64, 129, 0.2);
+    border-radius: 18px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.card-glow {
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 180px; height: 180px;
+    background: radial-gradient(circle, #ff4081, transparent 70%);
+    border-radius: 50%;
+    filter: blur(50px);
+    opacity: 0.15;
+    pointer-events: none;
+}
+
+/* ---- Header ---- */
+.login-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 32px;
+    text-align: center;
+}
+
+.login-logo {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 900;
+    letter-spacing: 8px;
+    color: #ff4081;
+    text-shadow: 0 0 20px rgba(255, 64, 129, 0.4);
+}
+
+.logo-bracket { color: #00bcd4; }
 
 .login-title {
-    color: #00ccff;
-    margin-bottom: 1em;
-    font-size: 1.8em;
-    letter-spacing: 1.5px;
+    font-family: 'Exo 2', sans-serif !important;
+    font-size: 1.15rem !important;
+    font-weight: 700 !important;
+    color: rgba(240, 240, 240, 0.9) !important;
+    letter-spacing: 2px !important;
+    margin: 0 !important;
+    text-transform: none !important;
 }
 
+.login-subtitle {
+    font-family: 'Exo 2', sans-serif;
+    font-size: 0.75rem;
+    color: rgba(240, 240, 240, 0.35);
+    letter-spacing: 2px;
+    margin: 0;
+}
+
+/* ---- Error banner ---- */
+.form-error-banner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: rgba(255, 64, 129, 0.08);
+    border: 1px solid rgba(255, 64, 129, 0.3);
+    border-radius: 8px;
+    color: #ff4081;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+}
+
+/* ---- Form ---- */
 .login-form {
     display: flex;
     flex-direction: column;
-    gap: 1em;
+    gap: 18px;
 }
 
-input[type="text"],
-input[type="password"] {
-    padding: 0.5em;
-    background-color: #141414;
-    border: 1px solid #333;
-    border-radius: 5px;
-    color: #d1d1d1;
-    font-size: 1em;
+.field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
-input[type="text"]:focus,
-input[type="password"]:focus {
+.field-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.55rem;
+    letter-spacing: 3px;
+    color: rgba(240, 240, 240, 0.4);
+    padding-left: 2px;
+}
+
+.field-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.field-icon {
+    position: absolute;
+    left: 14px;
+    width: 16px;
+    height: 16px;
+    color: rgba(240, 240, 240, 0.25);
+    pointer-events: none;
+    transition: color 0.2s ease;
+}
+
+.field-input {
+    width: 100%;
+    padding: 12px 14px 12px 42px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    color: #f0f0f0;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    box-sizing: border-box;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
     outline: none;
-    border-color: #00ccff;
-    box-shadow: 0 0 5px #00ccff;
 }
 
-.login-button {
-    padding: 0.7em;
-    background-color: #00ccff;
-    border: none;
-    border-radius: 5px;
-    color: #0b0c0d;
-    font-weight: bold;
-    font-size: 1.1em;
+.field-input::placeholder {
+    color: rgba(240, 240, 240, 0.2);
+}
+
+.field-input:focus {
+    border-color: rgba(255, 64, 129, 0.55);
+    box-shadow: 0 0 0 3px rgba(255, 64, 129, 0.08);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.field-wrapper:focus-within .field-icon {
+    color: #ff4081;
+}
+
+/* ---- Submit button ---- */
+.btn-submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 13px;
+    margin-top: 6px;
+    background: rgba(255, 64, 129, 0.12);
+    border: 1px solid rgba(255, 64, 129, 0.45);
+    border-radius: 9px;
+    color: #ff4081;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.68rem;
+    letter-spacing: 3px;
+    font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease,
+                transform 0.2s ease, box-shadow 0.25s ease;
 }
 
-.login-button:hover {
-    background-color: #00a3cc;
+.btn-submit:hover {
+    background: rgba(255, 64, 129, 0.25);
+    border-color: rgba(255, 64, 129, 0.7);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(255, 64, 129, 0.15);
 }
 
-h1, h2 {
-    margin: 0;
-    padding: 0;
+.btn-submit:active {
+    transform: translateY(0);
 }
 
+/* ---- Back link ---- */
 .back-link {
-    margin-top: 20px;
+    display: block;
     text-align: center;
-}
-
-.back-button {
+    margin-top: 22px;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    color: rgba(240, 240, 240, 0.25);
     text-decoration: none;
-    font-weight: bold;
-    color: #00bcd4; /* Color del texto */
-    padding: 10px 20px;
-    border: 2px solid #00bcd4;
-    border-radius: 5px;
-    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+    transition: color 0.3s ease;
 }
 
-.back-button:hover {
-    background-color: #00bcd4;
-    color: #ffffff; /* Color del texto al hacer hover */
+.back-link:hover {
+    color: #00bcd4;
+    text-decoration: none;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 480px) {
+    .login-card { padding: 32px 24px 28px; }
+    .login-logo { font-size: 1.1rem; }
 }

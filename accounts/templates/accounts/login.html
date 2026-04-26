@@ -1,20 +1,74 @@
 {% extends 'accounts/base.html' %}
-
 {% load static %}
 
-{% block content %}
+{% block title %}Iniciar Sesión — JoiSecurePass{% endblock %}
 
+{% block content %}
 <link rel="stylesheet" href="{% static 'accounts/css/login_styles.css' %}">
 
-<div class="login-container">
-    <h2 class="login-title">Iniciar sesión</h2>
-    <form method="post" class="login-form">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="login-button">Iniciar sesión</button>
-    </form>
-    <div class="back-link">
-        <a href="javascript:history.back()" class="back-button">Volver a la página anterior</a>
+<div class="login-wrapper">
+    <div class="bg-grid"></div>
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+
+    <div class="login-card">
+        <div class="card-glow"></div>
+
+        <!-- Header -->
+        <div class="login-header">
+            <div class="login-logo">
+                <span class="logo-bracket">[</span>JSP<span class="logo-bracket">]</span>
+            </div>
+            <h2 class="login-title">Portal de Gestión</h2>
+            <p class="login-subtitle">Accede con tus credenciales de operador</p>
+        </div>
+
+        <!-- Form -->
+        <form method="post" class="login-form">
+            {% csrf_token %}
+
+            {% if form.errors %}
+            <div class="form-error-banner">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                Usuario o contraseña incorrectos
+            </div>
+            {% endif %}
+
+            <div class="field-group">
+                <label class="field-label" for="id_username">USUARIO</label>
+                <div class="field-wrapper">
+                    <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    <input type="text" name="username" id="id_username"
+                           class="field-input" placeholder="Nombre de usuario"
+                           autocomplete="username" autofocus
+                           value="{{ form.username.value|default:'' }}">
+                </div>
+            </div>
+
+            <div class="field-group">
+                <label class="field-label" for="id_password">CONTRASEÑA</label>
+                <div class="field-wrapper">
+                    <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                    <input type="password" name="password" id="id_password"
+                           class="field-input" placeholder="Contraseña"
+                           autocomplete="current-password">
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit">
+                <span>Iniciar Sesión</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+        </form>
+
+        <!-- Back link -->
+        <a href="/" class="back-link">← Volver al inicio</a>
     </div>
 </div>
 {% endblock %}

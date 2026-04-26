@@ -71,7 +71,7 @@ def register(request):
                 phone.user = user
                 phone.save()
             
-            return redirect('login')
+            return redirect('enroll_face', pk=user.pk)
     else:
         user_form = CustomUserForm()
         address_formset = AddressFormSet(instance=None)

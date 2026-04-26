@@ -1,32 +1,307 @@
-.form-container {
-    max-width: 800px;
-    margin: 0 auto;
+/* =======================================================
+   Register Page — JoiSecurePass
+   ======================================================= */
+
+.register-wrapper {
+    position: relative;
+    min-height: calc(100vh - 120px);
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 48px 20px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+/* ---- Background ---- */
+.bg-grid {
+    position: fixed;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(0, 188, 212, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 188, 212, 0.04) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.bg-orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.09;
+    pointer-events: none;
+    z-index: 0;
+    animation: orbFloat 12s ease-in-out infinite;
+}
+
+.bg-orb-1 {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, #00bcd4, transparent 70%);
+    top: -160px; left: -160px;
+}
+
+.bg-orb-2 {
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, #ff4081, transparent 70%);
+    bottom: -120px; right: -120px;
+    animation-delay: -6s;
+}
+
+@keyframes orbFloat {
+    0%, 100% { transform: translate(0, 0); }
+    50%       { transform: translate(20px, -20px); }
+}
+
+/* ---- Card ---- */
+.register-card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 760px;
+    padding: 44px 44px 36px;
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(0, 188, 212, 0.2);
+    border-radius: 18px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.card-glow {
+    position: absolute;
+    top: -60px; left: -60px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, #00bcd4, transparent 70%);
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.12;
+    pointer-events: none;
+}
+
+/* ---- Header ---- */
+.register-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 36px;
+    text-align: center;
+}
+
+.register-logo {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 900;
+    letter-spacing: 8px;
+    color: #00bcd4;
+    text-shadow: 0 0 20px rgba(0, 188, 212, 0.4);
+}
+
+.logo-bracket { color: #ff4081; }
+
+.register-title {
+    font-family: 'Exo 2', sans-serif !important;
+    font-size: 1.15rem !important;
+    font-weight: 700 !important;
+    color: rgba(240, 240, 240, 0.9) !important;
+    letter-spacing: 2px !important;
+    margin: 0 !important;
+}
+
+.register-subtitle {
+    font-family: 'Exo 2', sans-serif;
+    font-size: 0.75rem;
+    color: rgba(240, 240, 240, 0.35);
+    letter-spacing: 2px;
+    margin: 0;
+}
+
+/* ---- Form sections ---- */
+.register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
     padding: 20px;
-    border: 1px solid #ddd;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 10px;
 }
-.form-group {
-    margin-bottom: 15px;
+
+.section-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.55rem;
+    letter-spacing: 4px;
+    color: #00bcd4;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(0, 188, 212, 0.15);
 }
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
+
+.form-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
 }
-.form-group input,
-.form-group select,
-.form-group textarea {
+
+.field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+    min-width: 160px;
+}
+
+.field-group--wide {
+    flex: 2;
+}
+
+.field-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.5rem;
+    letter-spacing: 3px;
+    color: rgba(240, 240, 240, 0.4);
+    padding-left: 2px;
+}
+
+/* Django form inputs */
+.register-form input[type="text"],
+.register-form input[type="email"],
+.register-form input[type="number"],
+.register-form input[type="tel"],
+.register-form select,
+.register-form textarea {
     width: 100%;
-    padding: 8px;
+    padding: 11px 14px;
+    background: #1a1a2e;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #f0f0f0;
+    -webkit-text-fill-color: #f0f0f0;
+    color-scheme: dark;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 0.88rem;
+    letter-spacing: 1px;
     box-sizing: border-box;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    outline: none;
 }
-.form-group img {
-    max-width: 200px;
-    max-height: 200px;
+
+.register-form input[type="text"]:focus,
+.register-form input[type="email"]:focus,
+.register-form input[type="number"]:focus,
+.register-form input[type="tel"]:focus,
+.register-form select:focus,
+.register-form textarea:focus {
+    border-color: rgba(0, 188, 212, 0.55);
+    box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.08);
+    background: #1e1e3a;
 }
-.form-group .form-inline {
+
+/* Autofill override */
+.register-form input:-webkit-autofill,
+.register-form input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px #1a1a2e inset;
+    -webkit-text-fill-color: #f0f0f0;
+    caret-color: #f0f0f0;
+}
+
+.register-form select {
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+}
+
+/* Select options inherit dark background */
+.register-form select option {
+    background: #1a1a2e;
+    color: #f0f0f0;
+}
+
+.register-form input[type="file"] {
+    color: rgba(240, 240, 240, 0.5);
+    font-family: 'Exo 2', sans-serif;
+    font-size: 0.78rem;
+    padding: 8px 0;
+    cursor: pointer;
+}
+
+.register-form input::placeholder {
+    color: rgba(240, 240, 240, 0.3);
+    -webkit-text-fill-color: rgba(240, 240, 240, 0.3);
+}
+
+/* Profile image preview */
+.profile-preview {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 188, 212, 0.3);
+    object-fit: cover;
+    margin-top: 6px;
+}
+
+/* ---- Submit button ---- */
+.btn-submit {
     display: flex;
     align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 14px;
+    background: rgba(0, 188, 212, 0.1);
+    border: 1px solid rgba(0, 188, 212, 0.45);
+    border-radius: 9px;
+    color: #00bcd4;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 3px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease,
+                transform 0.2s ease, box-shadow 0.25s ease;
 }
-.form-group .form-inline input[type="file"] {
-    margin-left: 10px;
+
+.btn-submit:hover {
+    background: rgba(0, 188, 212, 0.2);
+    border-color: rgba(0, 188, 212, 0.7);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 188, 212, 0.15);
+}
+
+.btn-submit:active {
+    transform: translateY(0);
+}
+
+/* ---- Back link ---- */
+.back-link {
+    display: block;
+    text-align: center;
+    margin-top: 22px;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    color: rgba(240, 240, 240, 0.25);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.back-link:hover {
+    color: #ff4081;
+    text-decoration: none;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 600px) {
+    .register-card { padding: 28px 20px 24px; }
+    .form-row { flex-direction: column; }
+    .field-group { min-width: unset; }
 }

@@ -16,7 +16,7 @@ class PhoneForm(forms.ModelForm):
 class CustomUserForm(forms.ModelForm):
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'dni', 'numero_legajo', 'nivel_acceso', 'profile_image']
+        fields = ['username', 'email', 'dni', 'numero_legajo', 'nivel_acceso']
         widgets = {
             'nivel_acceso': forms.Select(),
         }

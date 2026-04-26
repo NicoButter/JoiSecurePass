@@ -1,84 +1,122 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Empleados</title>
-  
-    <link rel="stylesheet" href="{% static 'accounts/css/base_styles.css' %}">
+{% extends 'accounts/base.html' %}
+{% load static %}
 
-</head>
-<body>
-    <h2>Registro de Empleados</h2>
-    <div class="form-container">
-        <form method="post" enctype="multipart/form-data">
+{% block title %}Registro de Empleado — JoiSecurePass{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'accounts/css/register_styles.css' %}">
+
+<div class="register-wrapper">
+    <div class="bg-grid"></div>
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+
+    <div class="register-card">
+        <div class="card-glow"></div>
+
+        <!-- Header -->
+        <div class="register-header">
+            <div class="register-logo">
+                <span class="logo-bracket">[</span>JSP<span class="logo-bracket">]</span>
+            </div>
+            <h2 class="register-title">Registro de Empleado</h2>
+            <p class="register-subtitle">Completá los datos para dar de alta al personal</p>
+        </div>
+
+        <form method="post" class="register-form">
             {% csrf_token %}
-            <div class="form-group">
-                <label for="username">Nombre de Usuario:</label>
-                {{ user_form.username.label_tag }}
-                {{ user_form.username }}
-            </div>
 
-            <div class="form-group">
-                <label for="email">Correo Electrónico:</label>
-                {{ user_form.email.label_tag }}
-                {{ user_form.email }}
-            </div>
+            <!-- Sección: Datos de acceso -->
+            <div class="form-section">
+                <div class="section-title">DATOS DE ACCESO</div>
 
-            <div class="form-group">
-                <label for="dni">DNI:</label>
-                {{ user_form.dni.label_tag }}
-                {{ user_form.dni }}
-            </div>
-
-            <div class="form-group">
-                <label for="numero_legajo">Número de Legajo:</label>
-                {{ user_form.numero_legajo.label_tag }}
-                {{ user_form.numero_legajo }}
-            </div>
-
-            <div class="form-group">
-                <label for="nivel_acceso">Nivel de Acceso:</label>
-                {{ user_form.nivel_acceso.label_tag }}
-                {{ user_form.nivel_acceso }}
-            </div>
-
-            <div class="form-group">
-                <label for="profile_image">Imagen de Perfil:</label>
-                {{ user_form.profile_image.label_tag }}
-                {{ user_form.profile_image }}
-                {% if user_form.instance.profile_image %}
-                    <div class="form-inline">
-                        <img src="{{ user_form.instance.profile_image.url }}" alt="Imagen de Perfil">
+                <div class="form-row">
+                    <div class="field-group">
+                        <label class="field-label">USUARIO</label>
+                        {{ user_form.username }}
                     </div>
-                {% endif %}
+                    <div class="field-group">
+                        <label class="field-label">CORREO ELECTRÓNICO</label>
+                        {{ user_form.email }}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="field-group">
+                        <label class="field-label">DNI</label>
+                        {{ user_form.dni }}
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Nº LEGAJO</label>
+                        {{ user_form.numero_legajo }}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="field-group">
+                        <label class="field-label">NIVEL DE ACCESO</label>
+                        {{ user_form.nivel_acceso }}
+                    </div>
+                </div>
             </div>
 
-            <h3>Dirección:</h3>
-            {{ address_formset.management_form }}
-            {% for form in address_formset %}
-                <div class="form-group">
-                    <label for="{{ form.id_for_label }}">Dirección:</label>
-                    {{ form.street_address.label_tag }} {{ form.street_address }}
-                    {{ form.city.label_tag }} {{ form.city }}
-                    {{ form.state.label_tag }} {{ form.state }}
-                    {{ form.postal_code.label_tag }} {{ form.postal_code }}
-                    {{ form.country.label_tag }} {{ form.country }}
+            <!-- Sección: Dirección -->
+            <div class="form-section">
+                <div class="section-title">DIRECCIÓN</div>
+                {{ address_formset.management_form }}
+                {% for form in address_formset %}
+                <div class="form-row">
+                    <div class="field-group field-group--wide">
+                        <label class="field-label">CALLE</label>
+                        {{ form.street_address }}
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">CIUDAD</label>
+                        {{ form.city }}
+                    </div>
                 </div>
-            {% endfor %}
-
-            <h3>Teléfonos:</h3>
-            {{ phone_formset.management_form }}
-            {% for form in phone_formset %}
-                <div class="form-group">
-                    <label for="{{ form.id_for_label }}">Teléfono:</label>
-                    {{ form.phone_number.label_tag }} {{ form.phone_number }}
-                    {{ form.phone_type.label_tag }} {{ form.phone_type }}
+                <div class="form-row">
+                    <div class="field-group">
+                        <label class="field-label">PROVINCIA</label>
+                        {{ form.state }}
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">CÓDIGO POSTAL</label>
+                        {{ form.postal_code }}
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">PAÍS</label>
+                        {{ form.country }}
+                    </div>
                 </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
 
-            <button type="submit">Registrar</button>
+            <!-- Sección: Teléfonos -->
+            <div class="form-section">
+                <div class="section-title">TELÉFONOS</div>
+                {{ phone_formset.management_form }}
+                {% for form in phone_formset %}
+                <div class="form-row">
+                    <div class="field-group">
+                        <label class="field-label">NÚMERO</label>
+                        {{ form.phone_number }}
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">TIPO</label>
+                        {{ form.phone_type }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <button type="submit" class="btn-submit">
+                <span>Registrar Empleado</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
         </form>
+
+        <a href="javascript:history.back()" class="back-link">← Volver</a>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

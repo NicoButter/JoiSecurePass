@@ -166,20 +166,39 @@
             font-size: 3rem;
         }
 
+        .result-overlay .result-welcome {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.65rem;
+            letter-spacing: 5px;
+            color: rgba(255,255,255,0.5);
+            text-transform: uppercase;
+        }
+
         .result-overlay .result-name {
             font-family: 'Exo 2', sans-serif;
-            font-size: 1.4rem;
+            font-size: 1.8rem;
             font-weight: 700;
             color: #fff;
             letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .result-overlay .result-time {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 900;
+            letter-spacing: 4px;
+            color: #00bcd4;
+            text-shadow: 0 0 20px rgba(0, 188, 212, 0.6);
         }
 
         .result-overlay .result-action {
             font-family: 'Orbitron', sans-serif;
-            font-size: 0.7rem;
+            font-size: 0.6rem;
             letter-spacing: 3px;
-            padding: 6px 18px;
+            padding: 5px 16px;
             border-radius: 20px;
+            margin-top: 4px;
         }
 
         .result-overlay.success .result-action {
@@ -240,17 +259,49 @@
             min-width: 200px;
         }
 
-        /* ---- Footer link ---- */
-        .back-link {
-            font-family: 'Exo 2', sans-serif;
-            font-size: 0.75rem;
-            letter-spacing: 2px;
-            color: rgba(240, 240, 240, 0.3);
-            text-decoration: none;
-            transition: color 0.3s;
+        /* ---- Live clock ---- */
+        .live-clock {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
         }
 
-        .back-link:hover { color: #ff4081; }
+        .clock-time {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: 6px;
+            color: #00bcd4;
+            text-shadow: 0 0 18px rgba(0, 188, 212, 0.45);
+        }
+
+        .clock-date {
+            font-family: 'Exo 2', sans-serif;
+            font-size: 0.72rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: rgba(240, 240, 240, 0.4);
+        }
+
+        /* ---- Discrete exit hint (invisible, appears only on hover of logo) ---- */
+        .exit-hint {
+            position: fixed;
+            bottom: 12px;
+            right: 16px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.45rem;
+            letter-spacing: 2px;
+            color: transparent;
+            user-select: none;
+            transition: color 0.6s ease;
+            z-index: 10;
+        }
+
+        .terminal-logo:hover ~ .exit-hint,
+        .terminal-logo:focus ~ .exit-hint {
+            color: rgba(255,255,255,0.08);
+        }
     </style>
 </head>
 <body>
@@ -262,10 +313,15 @@
 
         <!-- Header -->
         <div class="terminal-header">
-            <div class="terminal-logo">
+            <div class="terminal-logo" id="discreteExit" title="">
                 <span class="logo-bracket">[</span> JSP <span class="logo-bracket">]</span>
             </div>
             <p class="terminal-title">Terminal de Fichaje — Reconocimiento Biométrico</p>
+            <!-- Live clock -->
+            <div class="live-clock">
+                <div class="clock-time" id="clockTime">--:--:--</div>
+                <div class="clock-date" id="clockDate">---</div>
+            </div>
         </div>
 
         <!-- Camera -->
@@ -283,7 +339,9 @@
 
             <div class="result-overlay" id="resultOverlay">
                 <div class="result-icon" id="resultIcon"></div>
+                <div class="result-welcome" id="resultWelcome"></div>
                 <div class="result-name" id="resultName"></div>
+                <div class="result-time" id="resultTime"></div>
                 <div class="result-action" id="resultAction"></div>
             </div>
         </div>
@@ -299,10 +357,10 @@
         <!-- CSRF (hidden) -->
         <form id="csrf-form" style="display:none;">{% csrf_token %}</form>
 
-        <!-- Back link -->
-        <a href="/" class="back-link">← Volver al inicio</a>
-
     </div>
+
+    <!-- Discrete exit hint (renders but invisible) -->
+    <span class="exit-hint" id="exitHint">· · · · ·</span>
 
     <script>
         const video       = document.getElementById('video');
@@ -315,9 +373,40 @@
 
         const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-        let scanning     = false;   // Is a request in flight?
-        let paused       = false;   // Paused after successful recognition
+        let scanning     = false;
+        let paused       = false;
         let scanInterval = null;
+
+        // ---- Live clock ----
+        const DAYS   = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+        const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+        function updateClock() {
+            const now  = new Date();
+            const hh   = String(now.getHours()).padStart(2, '0');
+            const mm   = String(now.getMinutes()).padStart(2, '0');
+            const ss   = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('clockTime').textContent = `${hh}:${mm}:${ss}`;
+            const dayName   = DAYS[now.getDay()];
+            const dayNum    = now.getDate();
+            const monthName = MONTHS[now.getMonth()];
+            const year      = now.getFullYear();
+            document.getElementById('clockDate').textContent = `${dayName} ${dayNum} de ${monthName} de ${year}`;
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        // ---- Discrete exit: 5 rapid clicks on logo ----
+        let exitClicks = 0;
+        let exitTimer  = null;
+        document.getElementById('discreteExit').addEventListener('click', () => {
+            exitClicks++;
+            clearTimeout(exitTimer);
+            if (exitClicks >= 5) {
+                window.location.href = '/';
+            }
+            exitTimer = setTimeout(() => { exitClicks = 0; }, 2500);
+        });
 
         // --- Set status helper ---
         function setStatus(state, text) {
@@ -326,11 +415,13 @@
         }
 
         // --- Show result overlay ---
-        function showResult(type, icon, name, action) {
+        function showResult(type, icon, welcome, name, time, action) {
             overlay.className = 'result-overlay visible ' + type;
-            document.getElementById('resultIcon').textContent   = icon;
-            document.getElementById('resultName').textContent   = name;
-            document.getElementById('resultAction').textContent = action;
+            document.getElementById('resultIcon').textContent    = icon;
+            document.getElementById('resultWelcome').textContent = welcome;
+            document.getElementById('resultName').textContent    = name;
+            document.getElementById('resultTime').textContent    = time;
+            document.getElementById('resultAction').textContent  = action;
         }
 
         // --- Hide result overlay ---
@@ -367,18 +458,17 @@
                     setStatus('scanning', 'BUSCANDO ROSTRO...');
                 } else {
                     // Successful identification
-                    const action = data.message || 'ACCESO REGISTRADO';
-                    showResult('success', '✓', data.name || 'Identificado', action.toUpperCase());
-                    setStatus('success', 'ACCESO CONCEDIDO');
+                    const action = data.action || 'REGISTRO';
+                    showResult('success', '✓', 'BIENVENIDO', data.name || '', data.time || '', action);
+                    setStatus('success', `${action} REGISTRADA — ${data.time || ''}`);
                     scanLine.style.animationPlayState = 'paused';
                     paused = true;
-                    // Resume scanning after 4 seconds
                     setTimeout(() => {
                         hideResult();
                         scanLine.style.animationPlayState = 'running';
                         setStatus('scanning', 'BUSCANDO ROSTRO...');
                         paused = false;
-                    }, 4000);
+                    }, 5000);
                 }
             })
             .catch(() => {
@@ -400,7 +490,7 @@
             .catch(err => {
                 console.error('Camera error:', err);
                 setStatus('error', 'CÁMARA NO DISPONIBLE');
-                showResult('error', '✕', 'Sin cámara', 'VERIFIQUE LOS PERMISOS');
+                showResult('error', '✕', '', 'Sin cámara', '', 'VERIFIQUE LOS PERMISOS');
             });
     </script>
 </body>

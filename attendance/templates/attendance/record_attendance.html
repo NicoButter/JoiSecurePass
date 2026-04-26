@@ -1,72 +1,407 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Record Attendance</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal de Fichaje — JoiSecurePass</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Exo+2:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <style>
+        /* ---- Reset & Base ---- */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background-color: #0c0c0c;
+            color: #f0f0f0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* ---- Background grid ---- */
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0, 188, 212, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 188, 212, 0.04) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: 0.08;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .bg-orb-1 { width: 400px; height: 400px; background: radial-gradient(circle, #00bcd4, transparent 70%); top: -100px; left: -100px; }
+        .bg-orb-2 { width: 350px; height: 350px; background: radial-gradient(circle, #ff4081, transparent 70%); bottom: -80px; right: -80px; }
+
+        /* ---- Main layout ---- */
+        .terminal-wrapper {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 30px 20px;
+            width: 100%;
+            max-width: 640px;
+        }
+
+        /* ---- Header ---- */
+        .terminal-header {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .terminal-logo {
+            font-size: 1.1rem;
+            font-weight: 900;
+            letter-spacing: 8px;
+            color: #00bcd4;
+            text-shadow: 0 0 20px rgba(0, 188, 212, 0.4);
+        }
+
+        .logo-bracket { color: #ff4081; }
+
+        .terminal-title {
+            font-family: 'Exo 2', sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: rgba(240, 240, 240, 0.5);
+        }
+
+        /* ---- Camera container ---- */
+        .camera-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 560px;
+            aspect-ratio: 4/3;
+            background: #0a0a0a;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 188, 212, 0.2);
+        }
+
         #video {
-            border: 1px solid black;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
         }
-        #canvas {
-            display: none;
+
+        #canvas { display: none; }
+
+        /* ---- Scan overlay ---- */
+        .scan-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
         }
+
+        /* Corner brackets */
+        .scan-corner {
+            position: absolute;
+            width: 28px;
+            height: 28px;
+        }
+
+        .scan-corner.tl { top: 14px; left: 14px;  border-top: 2px solid #00bcd4; border-left: 2px solid #00bcd4; }
+        .scan-corner.tr { top: 14px; right: 14px; border-top: 2px solid #00bcd4; border-right: 2px solid #00bcd4; }
+        .scan-corner.bl { bottom: 14px; left: 14px;  border-bottom: 2px solid #00bcd4; border-left: 2px solid #00bcd4; }
+        .scan-corner.br { bottom: 14px; right: 14px; border-bottom: 2px solid #00bcd4; border-right: 2px solid #00bcd4; }
+
+        /* Scanning line */
+        .scan-line {
+            position: absolute;
+            left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00bcd4, transparent);
+            box-shadow: 0 0 10px rgba(0, 188, 212, 0.8);
+            animation: scanMove 3s linear infinite;
+            opacity: 0.8;
+        }
+
+        @keyframes scanMove {
+            0%   { top: 10%; }
+            50%  { top: 88%; }
+            100% { top: 10%; }
+        }
+
+        /* Result overlay (shown on detection) */
+        .result-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(4px);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+
+        .result-overlay.visible { opacity: 1; }
+
+        .result-overlay .result-icon {
+            font-size: 3rem;
+        }
+
+        .result-overlay .result-name {
+            font-family: 'Exo 2', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 2px;
+        }
+
+        .result-overlay .result-action {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            padding: 6px 18px;
+            border-radius: 20px;
+        }
+
+        .result-overlay.success .result-action {
+            color: #4caf50;
+            border: 1px solid rgba(76, 175, 80, 0.5);
+            background: rgba(76, 175, 80, 0.1);
+        }
+
+        .result-overlay.error .result-action {
+            color: #ff4081;
+            border: 1px solid rgba(255, 64, 129, 0.5);
+            background: rgba(255, 64, 129, 0.1);
+        }
+
+        /* ---- Status bar ---- */
+        .status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(0, 188, 212, 0.15);
+            border-radius: 30px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4caf50;
+            box-shadow: 0 0 8px #4caf50;
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+
+        .status-dot.scanning  { background: #00bcd4; box-shadow: 0 0 10px #00bcd4; animation: dotPulse 1.2s ease-in-out infinite; }
+        .status-dot.success   { background: #4caf50; box-shadow: 0 0 10px #4caf50; animation: none; }
+        .status-dot.error     { background: #ff4081; box-shadow: 0 0 10px #ff4081; animation: none; }
+        .status-dot.waiting   { background: rgba(240,240,240,0.3); box-shadow: none; animation: none; }
+
+        @keyframes dotPulse {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.4; }
+        }
+
+        .status-label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.62rem;
+            letter-spacing: 3px;
+            color: rgba(240, 240, 240, 0.65);
+            min-width: 200px;
+        }
+
+        /* ---- Footer link ---- */
+        .back-link {
+            font-family: 'Exo 2', sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            color: rgba(240, 240, 240, 0.3);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover { color: #ff4081; }
     </style>
 </head>
 <body>
-    <h2>Record Attendance</h2>
-    <form id="attendance-form">
-        {% csrf_token %}
-        <button type="button" id="capture-btn">Capturar Imagen</button>
-        <p id="result-message"></p>
-    </form>
+    <div class="bg-grid"></div>
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
 
-    <video id="video" width="320" height="240" autoplay></video>
-    <canvas id="canvas" width="320" height="240"></canvas>
+    <div class="terminal-wrapper">
+
+        <!-- Header -->
+        <div class="terminal-header">
+            <div class="terminal-logo">
+                <span class="logo-bracket">[</span> JSP <span class="logo-bracket">]</span>
+            </div>
+            <p class="terminal-title">Terminal de Fichaje — Reconocimiento Biométrico</p>
+        </div>
+
+        <!-- Camera -->
+        <div class="camera-wrapper">
+            <video id="video" autoplay playsinline></video>
+            <canvas id="canvas"></canvas>
+
+            <div class="scan-overlay">
+                <div class="scan-corner tl"></div>
+                <div class="scan-corner tr"></div>
+                <div class="scan-corner bl"></div>
+                <div class="scan-corner br"></div>
+                <div class="scan-line" id="scanLine"></div>
+            </div>
+
+            <div class="result-overlay" id="resultOverlay">
+                <div class="result-icon" id="resultIcon"></div>
+                <div class="result-name" id="resultName"></div>
+                <div class="result-action" id="resultAction"></div>
+            </div>
+        </div>
+
+        <!-- Status bar -->
+        <div class="status-bar">
+            <div class="status-indicator">
+                <div class="status-dot waiting" id="statusDot"></div>
+                <span class="status-label" id="statusLabel">INICIANDO CÁMARA...</span>
+            </div>
+        </div>
+
+        <!-- CSRF (hidden) -->
+        <form id="csrf-form" style="display:none;">{% csrf_token %}</form>
+
+        <!-- Back link -->
+        <a href="/" class="back-link">← Volver al inicio</a>
+
+    </div>
 
     <script>
-        const video = document.getElementById('video');
-        const canvas = document.getElementById('canvas');
-        const context = canvas.getContext('2d');
-        const resultMessage = document.getElementById('result-message');
+        const video       = document.getElementById('video');
+        const canvas      = document.getElementById('canvas');
+        const ctx         = canvas.getContext('2d');
+        const statusDot   = document.getElementById('statusDot');
+        const statusLabel = document.getElementById('statusLabel');
+        const overlay     = document.getElementById('resultOverlay');
+        const scanLine    = document.getElementById('scanLine');
 
-        // Acceder a la cámara del usuario
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => {
-                video.srcObject = stream; // Asignar el flujo de video al elemento <video>
-            })
-            .catch(err => {
-                console.error("Error accessing the camera: ", err);
-                resultMessage.textContent = 'No se pudo acceder a la cámara.';
-            });
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-        // Capturar la imagen cuando se presiona el botón
-        document.getElementById('capture-btn').addEventListener('click', function() {
-            // Dibujar el cuadro de video en el canvas
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            const frameData = canvas.toDataURL('image/jpeg');
+        let scanning     = false;   // Is a request in flight?
+        let paused       = false;   // Paused after successful recognition
+        let scanInterval = null;
 
-            // Enviar la imagen capturada al servidor
+        // --- Set status helper ---
+        function setStatus(state, text) {
+            statusDot.className = 'status-dot ' + state;
+            statusLabel.textContent = text;
+        }
+
+        // --- Show result overlay ---
+        function showResult(type, icon, name, action) {
+            overlay.className = 'result-overlay visible ' + type;
+            document.getElementById('resultIcon').textContent   = icon;
+            document.getElementById('resultName').textContent   = name;
+            document.getElementById('resultAction').textContent = action;
+        }
+
+        // --- Hide result overlay ---
+        function hideResult() {
+            overlay.className = 'result-overlay';
+        }
+
+        // --- Send frame to server ---
+        function captureAndSend() {
+            if (scanning || paused || video.readyState < 2) return;
+
+            canvas.width  = video.videoWidth  || 640;
+            canvas.height = video.videoHeight || 480;
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const frameData = canvas.toDataURL('image/jpeg', 0.85);
+
+            scanning = true;
+            setStatus('scanning', 'ESCANEANDO ROSTRO...');
+
             fetch('{% url "record_attendance" %}', {
                 method: 'POST',
                 headers: {
-                    'X-CSRFToken': '{{ csrf_token }}',
+                    'X-CSRFToken': csrfToken,
                     'Accept': 'application/json',
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
-                body: `image=${encodeURIComponent(frameData)}`
+                body: 'image=' + encodeURIComponent(frameData)
             })
-            .then(response => response.json())
+            .then(r => r.json())
             .then(data => {
+                scanning = false;
                 if (data.error) {
-                    resultMessage.textContent = data.error;
+                    // No face detected — keep scanning silently
+                    setStatus('scanning', 'BUSCANDO ROSTRO...');
                 } else {
-                    resultMessage.textContent = data.message;
+                    // Successful identification
+                    const action = data.message || 'ACCESO REGISTRADO';
+                    showResult('success', '✓', data.name || 'Identificado', action.toUpperCase());
+                    setStatus('success', 'ACCESO CONCEDIDO');
+                    scanLine.style.animationPlayState = 'paused';
+                    paused = true;
+                    // Resume scanning after 4 seconds
+                    setTimeout(() => {
+                        hideResult();
+                        scanLine.style.animationPlayState = 'running';
+                        setStatus('scanning', 'BUSCANDO ROSTRO...');
+                        paused = false;
+                    }, 4000);
                 }
             })
-            .catch(error => {
-                console.error('Error:', error);
-                resultMessage.textContent = 'Ocurrió un error al procesar la solicitud.';
+            .catch(() => {
+                scanning = false;
+                setStatus('error', 'ERROR DE CONEXIÓN — REINTENTANDO...');
             });
-        });
+        }
+
+        // --- Start camera ---
+        navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 } })
+            .then(stream => {
+                video.srcObject = stream;
+                video.addEventListener('loadedmetadata', () => {
+                    setStatus('scanning', 'BUSCANDO ROSTRO...');
+                    // Send a frame every 2.5 seconds
+                    scanInterval = setInterval(captureAndSend, 2500);
+                });
+            })
+            .catch(err => {
+                console.error('Camera error:', err);
+                setStatus('error', 'CÁMARA NO DISPONIBLE');
+                showResult('error', '✕', 'Sin cámara', 'VERIFIQUE LOS PERMISOS');
+            });
     </script>
 </body>
 </html>

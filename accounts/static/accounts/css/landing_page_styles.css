@@ -1,19 +1,349 @@
-.landing-container {
+/* =======================================================
+   Landing Page — JoiSecurePass
+   Glassmorphism + Cyberpunk aesthetic
+   ======================================================= */
+
+/* --- Wrapper --- */
+.landing-wrapper {
     position: relative;
-    height: 100%;
+    min-height: calc(100vh - 120px);
     width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    box-sizing: border-box;
     overflow: hidden;
-    /* margin-top: 10%; */
-    padding: 0;
 }
 
-.background-image {
-    position:relative;
+/* --- Background grid --- */
+.bg-grid {
+    position: fixed;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(0, 188, 212, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 188, 212, 0.04) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* --- Background orbs --- */
+.bg-orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.12;
+    pointer-events: none;
+    z-index: 0;
+    animation: orbFloat 10s ease-in-out infinite;
+}
+
+.bg-orb-1 {
+    width: 550px;
+    height: 550px;
+    background: radial-gradient(circle, #00bcd4, transparent 70%);
+    top: -150px;
+    left: -150px;
+}
+
+.bg-orb-2 {
+    width: 450px;
+    height: 450px;
+    background: radial-gradient(circle, #ff4081, transparent 70%);
+    bottom: -100px;
+    right: -100px;
+    animation-delay: -5s;
+}
+
+@keyframes orbFloat {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33%       { transform: translate(25px, -20px) scale(1.06); }
+    66%       { transform: translate(-15px, 25px) scale(0.95); }
+}
+
+/* --- Central content --- */
+.landing-content {
+    position: relative;
+    z-index: 1;
+    max-width: 880px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 48px;
+}
+
+/* --- Brand header --- */
+.brand-header {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.brand-logo {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 3.2rem;
+    font-weight: 900;
+    letter-spacing: 10px;
+    color: #00bcd4;
+    text-shadow: 0 0 30px rgba(0, 188, 212, 0.5), 0 0 60px rgba(0, 188, 212, 0.2);
+}
+
+.logo-bracket {
+    color: #ff4081;
+    text-shadow: 0 0 20px rgba(255, 64, 129, 0.5);
+}
+
+.brand-title {
+    font-family: 'Orbitron', sans-serif !important;
+    font-size: 1.6rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 6px !important;
+    color: rgba(240, 240, 240, 0.85) !important;
+    text-transform: uppercase !important;
+    margin: 0 !important;
+}
+
+.accent-cyan {
+    color: #00bcd4;
+}
+
+.brand-subtitle {
+    font-family: 'Exo 2', sans-serif;
+    font-size: 0.8rem;
+    color: rgba(240, 240, 240, 0.4);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background: #4caf50;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #4caf50;
+    animation: statusPulse 2s ease-in-out infinite;
+}
+
+.status-text {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 3px;
+    color: #4caf50;
+}
+
+@keyframes statusPulse {
+    0%, 100% { box-shadow: 0 0 8px #4caf50; opacity: 1; }
+    50%       { box-shadow: 0 0 18px #4caf50; opacity: 0.6; }
+}
+
+/* --- Options grid --- */
+.options-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px;
+    width: 100%;
+}
+
+/* --- Option cards --- */
+.option-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+    padding: 42px 32px 36px;
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(0, 188, 212, 0.18);
+    border-radius: 18px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    text-decoration: none;
+    color: inherit;
+    overflow: hidden;
+    transition: transform 0.3s ease, border-color 0.3s ease,
+                background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.option-card:hover {
+    transform: translateY(-7px);
+    background: rgba(255, 255, 255, 0.07);
+    text-decoration: none;
+    color: inherit;
+}
+
+.card-terminal:hover {
+    border-color: rgba(0, 188, 212, 0.55);
+    box-shadow: 0 24px 48px rgba(0, 188, 212, 0.12), 0 0 0 1px rgba(0, 188, 212, 0.08);
+}
+
+.card-login {
+    border-color: rgba(255, 64, 129, 0.18);
+}
+
+.card-login:hover {
+    border-color: rgba(255, 64, 129, 0.55);
+    box-shadow: 0 24px 48px rgba(255, 64, 129, 0.12), 0 0 0 1px rgba(255, 64, 129, 0.08);
+}
+
+/* --- Card glow accent (corner blur) --- */
+.card-glow {
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    filter: blur(45px);
+    opacity: 0.2;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.glow-cyan { background: #00bcd4; }
+.glow-pink { background: #ff4081; }
+
+.option-card:hover .card-glow {
+    opacity: 0.55;
+}
+
+/* --- Card icon --- */
+.card-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    box-sizing: border-box;
+    transition: transform 0.3s ease;
+}
+
+.option-card:hover .card-icon {
+    transform: scale(1.08);
+}
+
+.icon-cyan {
+    background: rgba(0, 188, 212, 0.1);
+    border: 1px solid rgba(0, 188, 212, 0.3);
+    color: #00bcd4;
+}
+
+.icon-pink {
+    background: rgba(255, 64, 129, 0.1);
+    border: 1px solid rgba(255, 64, 129, 0.3);
+    color: #ff4081;
+}
+
+.card-icon svg {
     width: 100%;
     height: 100%;
-    object-fit: cover;  
-    object-position: center;
-    z-index: -3;
-    /* transform: translateY(10px); */
-    transform: scale(1.2) translate(-0%, 0%);
+}
+
+/* --- Card badge --- */
+.card-badge {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.55rem;
+    letter-spacing: 3px;
+    padding: 4px 14px;
+    border-radius: 20px;
+    text-transform: uppercase;
+}
+
+.badge-cyan {
+    color: #00bcd4;
+    background: rgba(0, 188, 212, 0.1);
+    border: 1px solid rgba(0, 188, 212, 0.3);
+}
+
+.badge-pink {
+    color: #ff4081;
+    background: rgba(255, 64, 129, 0.1);
+    border: 1px solid rgba(255, 64, 129, 0.3);
+}
+
+/* --- Card title --- */
+.card-title {
+    font-family: 'Exo 2', sans-serif !important;
+    font-size: 1.25rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 2px !important;
+    text-transform: uppercase !important;
+    margin: 0 !important;
+}
+
+.title-cyan { color: #00bcd4 !important; }
+.title-pink { color: #ff4081 !important; }
+
+/* --- Card description --- */
+.card-desc {
+    font-family: 'Exo 2', sans-serif;
+    font-size: 0.82rem;
+    color: rgba(240, 240, 240, 0.55);
+    line-height: 1.65;
+    margin: 0;
+    max-width: 270px;
+}
+
+/* --- Card CTA button --- */
+.card-action {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    font-weight: 600;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.action-cyan {
+    color: #00bcd4;
+    background: rgba(0, 188, 212, 0.08);
+    border: 1px solid rgba(0, 188, 212, 0.35);
+}
+
+.action-pink {
+    color: #ff4081;
+    background: rgba(255, 64, 129, 0.08);
+    border: 1px solid rgba(255, 64, 129, 0.35);
+}
+
+.card-terminal:hover .action-cyan {
+    background: rgba(0, 188, 212, 0.22);
+    color: #fff;
+}
+
+.card-login:hover .action-pink {
+    background: rgba(255, 64, 129, 0.22);
+    color: #fff;
+}
+
+/* --- Responsive --- */
+@media (max-width: 650px) {
+    .options-grid {
+        grid-template-columns: 1fr;
+    }
+    .brand-logo {
+        font-size: 2.2rem;
+    }
+    .brand-title {
+        font-size: 1.1rem !important;
+    }
 }

@@ -1,78 +1,85 @@
-# Joi Secure Pass 
+# Joi Secure Pass
 
-## Sistema de Control de Acceso Basado en Reconocimiento Facial y NFC
+## Sistema de Control de Acceso Biomórtico y Gestión de Personal
 
 ![](images/joisecurepass.png)
 
-## Descripción general
-**JoiSecurePass** es una aplicación web desarrollada con **Django** y **PostgreSQL** diseñada para gestionar de manera eficiente el control de acceso del personal en una organización. El sistema combina tecnologías de reconocimiento facial y **NFC** para registrar los ingresos y salidas de los empleados, generando reportes detallados sobre su actividad laboral.
+## Descripción General
+**JoiSecurePass** es una aplicación web moderna desarrollada en **Django 5.1** diseñada para gestionar de manera automatizada el control de acceso del personal. El sistema combina un diseño de vanguardia (*Glassmorphism / Cyberpunk*) con un motor de reconocimiento facial que prioriza la privacidad: en lugar de almacenar fotos, utiliza vectores matemáticos (`face_encodings` de 128 flotantes).
 
-## Funcionalidades principales
-- **Reconocimiento facial**: Permite identificar a los empleados a través de una cámara web y una base de datos de rostros.
-- **Registro de ingresos y salidas**: Registra de manera precisa la hora de entrada y salida de cada empleado.
-- **Control de acceso mediante NFC**: Permite el registro de ingresos y salidas utilizando tarjetas o dispositivos NFC.
-- **Generación de reportes**: Genera reportes personalizados sobre la actividad de los empleados, incluyendo horas extras, faltas, horas de menos, etc.
-- **Integración con PostgreSQL**: Utiliza PostgreSQL como base de datos para almacenar la información de los empleados, los registros de acceso y los reportes.
+## Funcionalidades Principales
+- **Arquitectura Biométrica Segura:** No se almacenan imágenes en el servidor. El enrolamiento captura 10 frames de video, los promedia y guarda únicamente un array matemático en la base de datos (JSONField).
+- **Proceso de Enrolamiento en 2 Pasos:** 
+  1. El administrador ingresa los datos personales del empleado (DNI, legajo, nivel de acceso).
+  2. El sistema redirige a una terminal de captura web para generar el vector biométrico en tiempo real.
+- **Terminal de Fichaje (Kiosco):** Interfaz inmersiva, sin botones de navegación, que se autoejecuta. Cada 2.5 segundos escanea el entorno, y al detectar un rostro calcula la distancia (threshold 0.55). Muestra validación con hora exacta, nombre del empleado y etiqueta de ENTRADA/SALIDA. Salida discreta (5 clics en el logo).
+- **Interfaz UI/UX Moderna:** Diseño completamente responsivo basado en fondos tipo grilla (bg-grid), orbes de luz animados (Orbitron, Exo 2), tarjetas de *"Glassmorphism"*, inputs estilizados y compatibilidad con modo oscuro (`#1a1a2e`).
+- **Autenticación Basada en Roles:** Diferenciación entre `Administrador` y nivel `Operativo`.
 
-## Tecnologías utilizadas
-- **Django**: Framework web para el desarrollo de la aplicación.
-- **PostgreSQL**: Base de datos relacional para almacenar la información.
-- **OpenCV**: Biblioteca de visión por computadora para el reconocimiento facial.
+## Tecnologías Utilizadas
+- **Backend:** Django 5.1, SQLite (actual) / PostgreSQL (soportado).
+- **Computer Vision & Biometría:** `face_recognition` (basado en dlib), `OpenCV` / `Pillow`, `numpy`.
+- **Frontend:** HTML5, Vanilla JS, CSS3 Nativo (Glassmorphism, Flexbox, CSS Variables).
 
-## Requisitos del sistema
-- **Sistema operativo**: OpenSUSE (porque a mi me gusta mucho)
-- **Python**: [3.11]
-- **Django**: [4]
-- **PostgreSQL**: []
+## Requisitos del Sistema
+- **Sistema Operativo:** Basado en Linux (ej. openSUSE). Compatible con Windows/macOS teniendo las dependencias de C++ para `dlib`.
+- **Python:** 3.11+ (Recomendado 3.14)
 
+## Instalación y Configuración
 
-## Instalación y configuración
-
-1. Clonar el repositorio:
-   ```sh
-      git clone https://[tu_repositorio] JoiSecurePass
+1. **Clonar el repositorio:**
+   ```bash
+   git clone https://github.com/NicoButter/JoiSecurePass.git
+   cd JoiSecurePass
    ```
 
-2. Crear y activar el entorno virtual:
-   ```sh
-      python -m venv venv
-      source venv/bin/activate
+2. **Crear y activar el entorno virtual:**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # o `venv\Scripts\activate` en Windows
    ```
    
-3. Instalar las dependencias:
-   ```sh
-      pip install -r requirements.txt
+3. **Instalar las dependencias:**
+   *(Requiere CMake y compilador C++ en el sistema para compilar dlib)*
+   ```bash
+   pip install -r requirements.txt
    ```
 
-4. Configurar la base de datos:
-
-   Editar el archivo settings.py con los datos de tu base de datos PostgreSQL
-
-
-5. Ejecutar las migraciones:
-   ```sh
-      python manage.py migrate
+4. **Variables de Entorno (.env):**
+   Crea un archivo `.env` en la raíz del proyecto para definir:
+   ```ini
+   SECRET_KEY=tu_clave_secreta
+   DEBUG=True
+   ALLOWED_HOSTS=127.0.0.1,localhost
    ```
 
-6. Iniciar el servidor de desarrollo:
-   ```sh
-      python manage.py runserver
+5. **Ejecutar las migraciones:**
+   Generará la base de datos `db.sqlite3` y aplicará los campos de `face_encoding`.
+   ```bash
+   python manage.py migrate
    ```
 
-   ```sh
-      git clone https://NicoButter/JoiSecurePassoiSecurePass
+6. **Crear superusuario:**
+   ```bash
+   python manage.py createsuperuser
    ```
+
+7. **Iniciar el servidor de desarrollo:**
+   ```bash
+   python manage.py runserver
+   ```
+   *Accede a `http://127.0.0.1:8000` para ver la Landing Page.*
 
 ## Contribuciones
-¡Las contribuciones son bienvenidas! Si deseas contribuir a este proyecto, por favor, sigue estos pasos:
+¡Las contribuciones son bienvenidas! Si deseas contribuir a este proyecto:
+1. Haz un Fork del repositorio.
+2. Crea una nueva rama para tu feature.
+3. Realiza tus cambios y haz commits descriptivos.
+4. Envía un Pull Request.
 
-Forkea el repositorio.
-Crea una nueva rama.
-Realiza tus cambios.
-Envía una solicitud de pull.
+## Licencia
+Este proyecto está bajo la licencia MIT.
 
-# Licencia
-## Este proyecto está bajo la licencia MIT.
-
-### Si tienes alguna pregunta o sugerencia sobre este proyecto, no dudes en abrir un issue en el repositorio o contactarme a través de nicobutter@gmail.com.
+### Contacto
+Si tienes alguna pregunta, duda o sugerencia sobre este proyecto, no dudes en abrir un issue en el repositorio o contactarte con **Nicolas Buttefield** ([@nicobutter](https://github.com/nicobutter)) a través de **nicobutter@gmail.com**.
 

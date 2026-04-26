@@ -9,6 +9,8 @@ class CustomUser(AbstractUser):
     numero_legajo = models.CharField(max_length=50, unique=True, blank=True, null=True)
     nivel_acceso = models.ForeignKey('NivelAcceso', on_delete=models.SET_NULL, null=True, blank=True)
     profile_image = models.ImageField(upload_to='profile_images/', null=True, blank=True)
+    # Vector biométrico promedio de 128 floats. No permite reconstruir el rostro.
+    face_encoding = models.JSONField(null=True, blank=True)
 
     def __str__(self):
         return self.username

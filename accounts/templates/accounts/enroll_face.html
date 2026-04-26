@@ -1,0 +1,407 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+
+{% block title %}Enrollment Biométrico — {{ target_user.get_full_name|default:target_user.username }}{% endblock %}
+
+{% block content %}
+<style>
+    .enroll-wrapper {
+        max-width: 620px;
+        width: 100%;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+        padding: 40px 20px;
+    }
+
+    .enroll-header { text-align: center; }
+
+    .enroll-header h2 {
+        font-family: 'Exo 2', sans-serif !important;
+        font-size: 1.3rem !important;
+        font-weight: 700 !important;
+        color: #00bcd4 !important;
+        letter-spacing: 2px !important;
+        margin-bottom: 6px !important;
+    }
+
+    .enroll-header p {
+        font-family: 'Exo 2', sans-serif;
+        font-size: 0.85rem;
+        color: rgba(240,240,240,0.5);
+        letter-spacing: 1px;
+    }
+
+    .enroll-header .user-name {
+        color: rgba(240,240,240,0.85);
+        font-weight: 600;
+    }
+
+    /* Camera */
+    .camera-wrapper {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 4/3;
+        background: #0a0a0a;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid rgba(0, 188, 212, 0.2);
+    }
+
+    #video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    #canvas { display: none; }
+
+    .scan-corner { position: absolute; width: 24px; height: 24px; }
+    .scan-corner.tl { top: 12px; left: 12px;  border-top: 2px solid #00bcd4; border-left: 2px solid #00bcd4; }
+    .scan-corner.tr { top: 12px; right: 12px; border-top: 2px solid #00bcd4; border-right: 2px solid #00bcd4; }
+    .scan-corner.bl { bottom: 12px; left: 12px;  border-bottom: 2px solid #00bcd4; border-left: 2px solid #00bcd4; }
+    .scan-corner.br { bottom: 12px; right: 12px; border-bottom: 2px solid #00bcd4; border-right: 2px solid #00bcd4; }
+
+    /* Flash feedback */
+    .flash-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 188, 212, 0.25);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.1s ease;
+    }
+    .flash-overlay.flash { opacity: 1; }
+
+    /* Progress */
+    .progress-section { width: 100%; }
+
+    .progress-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+
+    .progress-label {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 0.58rem;
+        letter-spacing: 3px;
+        color: rgba(240,240,240,0.5);
+    }
+
+    .progress-count {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 0.65rem;
+        letter-spacing: 2px;
+        color: #00bcd4;
+    }
+
+    .progress-bar-bg {
+        width: 100%;
+        height: 6px;
+        background: rgba(255,255,255,0.06);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .progress-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #00bcd4, #4caf50);
+        border-radius: 10px;
+        width: 0%;
+        transition: width 0.4s ease;
+    }
+
+    /* Status */
+    .status-pill {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 20px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(0,188,212,0.15);
+        border-radius: 30px;
+    }
+
+    .status-dot {
+        width: 8px; height: 8px;
+        border-radius: 50%;
+        background: #00bcd4;
+        box-shadow: 0 0 8px #00bcd4;
+        animation: dotPulse 1.2s ease-in-out infinite;
+    }
+
+    .status-dot.success { background: #4caf50; box-shadow: 0 0 10px #4caf50; animation: none; }
+    .status-dot.error   { background: #ff4081; box-shadow: 0 0 10px #ff4081; animation: none; }
+    .status-dot.idle    { background: rgba(240,240,240,0.2); box-shadow: none; animation: none; }
+
+    @keyframes dotPulse {
+        0%, 100% { opacity: 1; }
+        50%       { opacity: 0.4; }
+    }
+
+    .status-text {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 0.6rem;
+        letter-spacing: 3px;
+        color: rgba(240,240,240,0.65);
+    }
+
+    /* Finish button */
+    .btn-finish {
+        display: none;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 36px;
+        background: rgba(76, 175, 80, 0.1);
+        border: 1px solid rgba(76, 175, 80, 0.4);
+        border-radius: 10px;
+        color: #4caf50;
+        font-family: 'Orbitron', sans-serif;
+        font-size: 0.7rem;
+        letter-spacing: 3px;
+        cursor: pointer;
+        text-transform: uppercase;
+        transition: background 0.25s, border-color 0.25s;
+    }
+
+    .btn-finish:hover {
+        background: rgba(76, 175, 80, 0.2);
+        border-color: rgba(76, 175, 80, 0.7);
+        color: #fff;
+    }
+
+    .btn-finish.visible { display: flex; }
+
+    /* Success state */
+    .success-banner {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        text-align: center;
+        padding: 24px;
+        background: rgba(76,175,80,0.08);
+        border: 1px solid rgba(76,175,80,0.3);
+        border-radius: 12px;
+        width: 100%;
+    }
+
+    .success-banner.visible { display: flex; }
+    .success-banner .icon   { font-size: 2.5rem; }
+    .success-banner h3 {
+        font-family: 'Exo 2', sans-serif !important;
+        font-size: 1rem !important;
+        color: #4caf50 !important;
+        letter-spacing: 2px !important;
+        margin: 0 !important;
+        text-transform: none !important;
+    }
+
+    .success-banner p {
+        font-family: 'Exo 2', sans-serif;
+        font-size: 0.8rem;
+        color: rgba(240,240,240,0.5);
+    }
+
+    .btn-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 8px;
+        padding: 10px 24px;
+        background: rgba(0,188,212,0.08);
+        border: 1px solid rgba(0,188,212,0.3);
+        border-radius: 8px;
+        color: #00bcd4;
+        font-family: 'Orbitron', sans-serif;
+        font-size: 0.62rem;
+        letter-spacing: 2px;
+        text-decoration: none;
+        transition: background 0.2s;
+    }
+
+    .btn-back:hover { background: rgba(0,188,212,0.18); color: #fff; text-decoration: none; }
+</style>
+
+<div class="enroll-wrapper">
+
+    <div class="enroll-header">
+        <h2>Registro Biométrico</h2>
+        <p>Registrando datos faciales de <span class="user-name">{{ target_user.get_full_name|default:target_user.username }}</span></p>
+    </div>
+
+    <!-- Camera -->
+    <div class="camera-wrapper" id="cameraWrapper">
+        <video id="video" autoplay playsinline></video>
+        <canvas id="canvas"></canvas>
+        <div class="scan-corner tl"></div>
+        <div class="scan-corner tr"></div>
+        <div class="scan-corner bl"></div>
+        <div class="scan-corner br"></div>
+        <div class="flash-overlay" id="flashOverlay"></div>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="progress-section">
+        <div class="progress-header">
+            <span class="progress-label">CAPTURAS BIOMÉTRICAS</span>
+            <span class="progress-count" id="progressCount">0 / 10</span>
+        </div>
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progressBar"></div>
+        </div>
+    </div>
+
+    <!-- Status -->
+    <div class="status-pill">
+        <div class="status-dot" id="statusDot"></div>
+        <span class="status-text" id="statusText">INICIANDO CÁMARA...</span>
+    </div>
+
+    <!-- Finish button (visible after 5+ captures) -->
+    <button class="btn-finish" id="btnFinish">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Guardar Datos Biométricos
+    </button>
+
+    <!-- Success banner (after saving) -->
+    <div class="success-banner" id="successBanner">
+        <div class="icon">✓</div>
+        <h3>Datos biométricos guardados</h3>
+        <p id="successDetail">El empleado puede usar el sistema de reconocimiento facial.</p>
+        <a href="{% url 'user_detail' target_user.pk %}" class="btn-back">← Volver al legajo</a>
+    </div>
+
+    <form id="csrfForm" style="display:none;">{% csrf_token %}</form>
+</div>
+
+<script>
+    const video         = document.getElementById('video');
+    const canvas        = document.getElementById('canvas');
+    const ctx           = canvas.getContext('2d');
+    const statusDot     = document.getElementById('statusDot');
+    const statusText    = document.getElementById('statusText');
+    const progressBar   = document.getElementById('progressBar');
+    const progressCount = document.getElementById('progressCount');
+    const btnFinish     = document.getElementById('btnFinish');
+    const flashOverlay  = document.getElementById('flashOverlay');
+    const successBanner = document.getElementById('successBanner');
+    const cameraWrapper = document.getElementById('cameraWrapper');
+
+    const csrfToken  = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    const enrollUrl  = '{% url "enroll_face" target_user.pk %}';
+    const TARGET     = 10;   // frames to collect
+
+    let count        = 0;
+    let capturing    = false;
+    let captureTimer = null;
+    let finished     = false;
+
+    function setStatus(state, text) {
+        statusDot.className = 'status-dot ' + state;
+        statusText.textContent = text;
+    }
+
+    function flash() {
+        flashOverlay.classList.add('flash');
+        setTimeout(() => flashOverlay.classList.remove('flash'), 150);
+    }
+
+    function updateProgress(n) {
+        count = n;
+        progressCount.textContent = `${n} / ${TARGET}`;
+        progressBar.style.width = `${Math.min((n / TARGET) * 100, 100)}%`;
+        if (n >= 5) btnFinish.classList.add('visible');
+    }
+
+    function captureFrame() {
+        if (finished || capturing || video.readyState < 2) return;
+        capturing = true;
+
+        canvas.width  = video.videoWidth  || 640;
+        canvas.height = video.videoHeight || 480;
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const frameData = canvas.toDataURL('image/jpeg', 0.9);
+
+        fetch(enrollUrl, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'image=' + encodeURIComponent(frameData),
+        })
+        .then(r => r.json())
+        .then(data => {
+            capturing = false;
+            if (data.status === 'captured') {
+                flash();
+                updateProgress(data.count);
+                if (data.count < TARGET) {
+                    setStatus('', `CAPTURANDO — ${data.count} de ${TARGET}`);
+                } else {
+                    setStatus('success', `${TARGET} CAPTURAS COMPLETADAS`);
+                    clearInterval(captureTimer);
+                }
+            } else if (data.status === 'no_face') {
+                setStatus('idle', 'ROSTRO NO DETECTADO — CENTRARSE EN LA CÁMARA');
+            } else {
+                setStatus('error', data.error || 'ERROR EN CAPTURA');
+            }
+        })
+        .catch(() => {
+            capturing = false;
+            setStatus('error', 'ERROR DE CONEXIÓN');
+        });
+    }
+
+    btnFinish.addEventListener('click', () => {
+        if (finished) return;
+        setStatus('', 'GUARDANDO DATOS BIOMÉTRICOS...');
+        btnFinish.disabled = true;
+        clearInterval(captureTimer);
+
+        fetch(enrollUrl, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'finish=true',
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.status === 'ok') {
+                finished = true;
+                cameraWrapper.style.display = 'none';
+                document.querySelector('.progress-section').style.display = 'none';
+                document.querySelector('.status-pill').style.display = 'none';
+                btnFinish.style.display = 'none';
+                document.getElementById('successDetail').textContent =
+                    `Enrollment completado con ${data.samples} capturas. El empleado puede fichar con reconocimiento facial.`;
+                successBanner.classList.add('visible');
+            } else {
+                setStatus('error', data.error || 'Error al guardar');
+                btnFinish.disabled = false;
+            }
+        })
+        .catch(() => {
+            setStatus('error', 'ERROR AL GUARDAR');
+            btnFinish.disabled = false;
+        });
+    });
+
+    // Start camera and begin capturing every 1.2 seconds
+    navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 } })
+        .then(stream => {
+            video.srcObject = stream;
+            video.addEventListener('loadedmetadata', () => {
+                setStatus('', 'POSICIONE EL ROSTRO FRENTE A LA CÁMARA');
+                captureTimer = setInterval(captureFrame, 1200);
+            });
+        })
+        .catch(err => {
+            console.error('Camera error:', err);
+            setStatus('error', 'CÁMARA NO DISPONIBLE');
+        });
+</script>
+{% endblock %}

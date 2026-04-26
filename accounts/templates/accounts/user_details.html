@@ -7,5 +7,14 @@
 <p><strong>DNI:</strong> {{ user.dni }}</p>
 <p><strong>Numero de legajo:</strong> {{ user.numero_legajo }}</p>
 <p><strong>Nivel de acceso:</strong> {{ user.nivel_acceso }}</p>
+<p><strong>Datos biométricos:</strong>
+    {% if user.face_encoding %}
+        <span style="color:#4caf50;">✓ Registrados</span>
+    {% else %}
+        <span style="color:#ff4081;">✕ Sin registrar</span>
+    {% endif %}
+</p>
 <a href="{% url 'edit_user' user.pk %}">Editar usuario</a>
+&nbsp;|&nbsp;
+<a href="{% url 'enroll_face' user.pk %}">Registrar datos biométricos</a>
 {% endblock %}

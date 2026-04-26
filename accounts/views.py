@@ -1,8 +1,22 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from .forms import CustomUserForm, AddressFormSet, PhoneFormSet
 from .models import CustomUser
+import base64
+import io
+import json
+import numpy as np
+
+try:
+    from PIL import Image
+    import face_recognition
+    FACE_RECOGNITION_AVAILABLE = True
+except ImportError:
+    FACE_RECOGNITION_AVAILABLE = False
 
 def landing_page(request):
     return render(request, 'accounts/landing_page.html')
@@ -123,5 +137,73 @@ def operativo_dashboard(request):
 # --------------------------------------------------------------------------------------------
 
 def personal_registration(request):
-    # Vista para el registro de personal
     return render(request, 'accounts/personal_registration.html')
+
+
+# --------------------------------------------------------------------------------------------
+# ENROLLMENT BIOMÉTRICO
+# --------------------------------------------------------------------------------------------
+
+@login_required
+def enroll_face(request, pk):
+    """
+    GET  → muestra la interfaz de captura biométrica para el usuario pk.
+    POST → recibe un frame base64, extrae el encoding y lo acumula en la sesión.
+           Cuando el cliente envía finish=true, promedia todos los encodings
+           acumulados y guarda el vector final en CustomUser.face_encoding.
+    Solo accesible por administradores.
+    """
+    target_user = get_object_or_404(CustomUser, pk=pk)
+
+    if request.method == 'GET':
+        request.session['enroll_encodings'] = []
+        return render(request, 'accounts/enroll_face.html', {'target_user': target_user})
+
+    elif request.method == 'POST':
+        if not FACE_RECOGNITION_AVAILABLE:
+            return JsonResponse({'error': 'face_recognition no está instalado'}, status=500)
+
+        finish = request.POST.get('finish') == 'true'
+
+        if finish:
+            encodings = request.session.get('enroll_encodings', [])
+            if len(encodings) < 3:
+                return JsonResponse({'error': 'Se necesitan al menos 3 capturas válidas'}, status=400)
+
+            avg_encoding = np.mean(np.array(encodings), axis=0).tolist()
+            target_user.face_encoding = avg_encoding
+            target_user.save(update_fields=['face_encoding'])
+            request.session.pop('enroll_encodings', None)
+            return JsonResponse({
+                'status': 'ok',
+                'message': f'Enrollment completado con {len(encodings)} capturas.',
+                'samples': len(encodings),
+            })
+
+        # Procesar frame individual
+        image_data = request.POST.get('image', '')
+        if not image_data:
+            return JsonResponse({'error': 'No se recibió imagen'}, status=400)
+
+        try:
+            if ',' in image_data:
+                image_data = image_data.split(',', 1)[1]
+            image = Image.open(io.BytesIO(base64.b64decode(image_data))).convert('RGB')
+            image_np = np.array(image)
+
+            encodings = face_recognition.face_encodings(image_np)
+            if not encodings:
+                return JsonResponse({'status': 'no_face'})
+
+            accumulated = request.session.get('enroll_encodings', [])
+            accumulated.append(encodings[0].tolist())
+            request.session['enroll_encodings'] = accumulated
+            request.session.modified = True
+
+            return JsonResponse({'status': 'captured', 'count': len(accumulated)})
+
+        except Exception as e:
+            print(f"Error en enrollment: {e}")
+            return JsonResponse({'error': 'Error al procesar la imagen'}, status=500)
+
+    return JsonResponse({'error': 'Método no permitido'}, status=405)

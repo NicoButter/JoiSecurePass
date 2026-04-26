@@ -23,14 +23,17 @@
         </div>
         <nav>
             <ul>
-                <li><a href="{% url 'login' %}">Iniciar sesión</a></li>
                 {% if user.is_authenticated %}
                     {% if user.nivel_acceso.nombre == 'Administrador' %}
-                        <li><a href="{% url 'admin_employee_register' %}">Registrar nuevo empleado</a></li>
+                        <li><a href="{% url 'admin_dashboard' %}">Dashboard Admin</a></li>
+                        <li><a href="{% url 'register' %}">Registrar empleado</a></li>
                     {% elif user.nivel_acceso.nombre == 'Operativo' %}
                         <li><a href="{% url 'operativo_dashboard' %}">Dashboard Operativo</a></li>
-            {% endif %}
-        {% endif %}
+                    {% endif %}
+                    <li><a href="{% url 'logout' %}">Cerrar sesión</a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}">Iniciar sesión</a></li>
+                {% endif %}
             </ul>
         </nav>
     </header>

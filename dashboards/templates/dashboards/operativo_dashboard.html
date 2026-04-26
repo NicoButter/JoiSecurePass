@@ -1,0 +1,115 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+
+{% block title %}Dashboard Operativo{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'accounts/css/operativo_dashboard_styles.css' %}">
+
+<div class="dashboard">
+    <h2>Dashboard Operativo</h2>
+
+    <!-- Resumen del día -->
+    <section class="resumen-hoy">
+        <h3>Hoy — {{ registros_hoy|length }} registro(s)</h3>
+        {% if registros_hoy %}
+        <table class="tabla-registros">
+            <thead>
+                <tr>
+                    <th>Empleado</th>
+                    <th>Entrada</th>
+                    <th>Salida</th>
+                    <th>Horas trabajadas</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in registros_hoy %}
+                <tr>
+                    <td>{{ item.obj.user.get_full_name|default:item.obj.user.username }}</td>
+                    <td>{{ item.obj.check_in_time|default:"—" }}</td>
+                    <td>{{ item.obj.check_out_time|default:"—" }}</td>
+                    <td>{{ item.horas_trabajadas }}h</td>
+                    <td class="estado-{{ item.estado|lower }}">{{ item.estado }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>Sin registros para hoy.</p>
+        {% endif %}
+    </section>
+
+    <!-- Filtros -->
+    <section class="filtros">
+        <h3>Historial de asistencia</h3>
+        <form method="get" class="form-filtros">
+            <label>Desde:
+                <input type="date" name="fecha_inicio" value="{{ fecha_inicio }}">
+            </label>
+            <label>Hasta:
+                <input type="date" name="fecha_fin" value="{{ fecha_fin }}">
+            </label>
+            <label>Empleado:
+                <select name="empleado">
+                    <option value="">Todos</option>
+                    {% for emp in empleados %}
+                    <option value="{{ emp.id }}" {% if empleado_seleccionado == emp.id|stringformat:"s" %}selected{% endif %}>
+                        {{ emp.get_full_name|default:emp.username }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </label>
+            <button type="submit">Filtrar</button>
+        </form>
+    </section>
+
+    <!-- Estadísticas del período -->
+    <section class="estadisticas">
+        <div class="stat-card">
+            <span class="stat-label">Total horas trabajadas</span>
+            <span class="stat-value">{{ total_horas }}h</span>
+        </div>
+        <div class="stat-card stat-extra">
+            <span class="stat-label">Horas extra (base {{ jornada_horas }}h/día)</span>
+            <span class="stat-value">{{ total_extra }}h</span>
+        </div>
+        <div class="stat-card stat-ausencia">
+            <span class="stat-label">Ausencias en el período</span>
+            <span class="stat-value">{{ ausencias }}</span>
+        </div>
+    </section>
+
+    <!-- Tabla histórica -->
+    <section class="historial">
+        {% if registros %}
+        <table class="tabla-registros">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Empleado</th>
+                    <th>Entrada</th>
+                    <th>Salida</th>
+                    <th>Horas trabajadas</th>
+                    <th>Horas extra</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in registros %}
+                <tr class="{% if item.horas_extra > 0 %}fila-extra{% endif %}">
+                    <td>{{ item.obj.date }}</td>
+                    <td>{{ item.obj.user.get_full_name|default:item.obj.user.username }}</td>
+                    <td>{{ item.obj.check_in_time|default:"—" }}</td>
+                    <td>{{ item.obj.check_out_time|default:"—" }}</td>
+                    <td>{{ item.horas_trabajadas }}h</td>
+                    <td>{{ item.horas_extra }}h</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No hay registros para el período seleccionado.</p>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

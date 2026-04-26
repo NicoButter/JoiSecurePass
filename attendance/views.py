@@ -5,10 +5,15 @@ import base64
 import io
 import numpy as np
 from PIL import Image
-import face_recognition
 from accounts.models import CustomUser
 from .models import Attendance
 from django.utils import timezone
+
+try:
+    import face_recognition
+    FACE_RECOGNITION_AVAILABLE = True
+except ImportError:
+    FACE_RECOGNITION_AVAILABLE = False
 
 @csrf_exempt
 def record_attendance(request):

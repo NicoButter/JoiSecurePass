@@ -1,0 +1,82 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+
+{% block title %}Dashboard Administrador{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'accounts/css/operativo_dashboard_styles.css' %}">
+
+<div class="dashboard">
+    <h2>Dashboard Administrador</h2>
+
+    <!-- Estadísticas generales -->
+    <section class="estadisticas">
+        <div class="stat-card">
+            <span class="stat-label">Total empleados</span>
+            <span class="stat-value">{{ total_usuarios }}</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label">Presentes hoy</span>
+            <span class="stat-value">{{ presentes_hoy }}</span>
+        </div>
+        <div class="stat-card stat-ausencia">
+            <span class="stat-label">Ausentes hoy</span>
+            <span class="stat-value">{{ ausentes_hoy }}</span>
+        </div>
+    </section>
+
+    <!-- Usuarios por nivel -->
+    <section class="usuarios-nivel">
+        <h3>Empleados por nivel de acceso</h3>
+        <ul>
+            {% for nivel in usuarios_por_nivel %}
+            <li><strong>{{ nivel.nombre }}:</strong> {{ nivel.total }}</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <!-- Últimos registros de asistencia -->
+    <section class="historial">
+        <h3>Últimos registros de asistencia</h3>
+        {% if ultimos_registros %}
+        <table class="tabla-registros">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Empleado</th>
+                    <th>Entrada</th>
+                    <th>Salida</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in ultimos_registros %}
+                <tr>
+                    <td>{{ r.date }}</td>
+                    <td>{{ r.user.get_full_name|default:r.user.username }}</td>
+                    <td>{{ r.check_in_time|default:"—" }}</td>
+                    <td>{{ r.check_out_time|default:"—" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>Sin registros recientes.</p>
+        {% endif %}
+    </section>
+
+    <!-- Últimos usuarios registrados -->
+    <section class="ultimos-usuarios">
+        <h3>Últimos empleados registrados</h3>
+        <ul>
+            {% for u in ultimos_usuarios %}
+            <li>
+                <a href="{% url 'user_detail' u.pk %}">{{ u.get_full_name|default:u.username }}</a>
+                — {{ u.nivel_acceso.nombre|default:"Sin nivel" }}
+                <small>({{ u.date_joined|date:"d/m/Y" }})</small>
+            </li>
+            {% endfor %}
+        </ul>
+        <a href="{% url 'register' %}" class="btn-accion">+ Registrar nuevo empleado</a>
+    </section>
+</div>
+{% endblock %}

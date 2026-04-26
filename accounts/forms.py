@@ -18,7 +18,7 @@ class CustomUserForm(forms.ModelForm):
         model = CustomUser
         fields = ['username', 'email', 'dni', 'numero_legajo', 'nivel_acceso', 'profile_image']
         widgets = {
-            'nivel_acceso': forms.Select(choices=[(nivel.id, nivel.nombre) for nivel in NivelAcceso.objects.all()]),
+            'nivel_acceso': forms.Select(),
         }
 
 AddressFormSet = inlineformset_factory(CustomUser, Address, form=AddressForm, extra=1, can_delete=True, max_num=5)

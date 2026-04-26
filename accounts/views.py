@@ -28,7 +28,7 @@ def login_view(request):
 # --------------------------------------------------------------------------------------------
 
 def operativo_dashboard(request):
-    return render(request, 'attendance/operativo_dashboard.html')
+    return render(request, 'accounts/operativo_dashboard.html')
 
 # --------------------------------------------------------------------------------------------
 
@@ -112,8 +112,13 @@ def user_detail(request, pk):
 # --------------------------------------------------------------------------------------------
 
 def admin_dashboard(request):
-    # Vista para el dashboard de administración
-    return render(request, 'accounts/admin_dashboard.html')
+    from django.shortcuts import redirect
+    return redirect('admin_dashboard')
+
+
+def operativo_dashboard(request):
+    from django.shortcuts import redirect
+    return redirect('operativo_dashboard')
 
 # --------------------------------------------------------------------------------------------
 

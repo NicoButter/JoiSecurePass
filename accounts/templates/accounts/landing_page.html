@@ -7,35 +7,57 @@
 <link rel="stylesheet" href="{% static 'accounts/css/landing_page_styles.css' %}">
 
 <div class="landing-wrapper">
-    <!-- Background animated elements -->
     <div class="bg-grid"></div>
     <div class="bg-orb bg-orb-1"></div>
     <div class="bg-orb bg-orb-2"></div>
 
     <div class="landing-content">
 
-        <!-- Brand Header -->
-        <div class="brand-header">
-            <div class="brand-logo">
-                <span class="logo-bracket">[</span>
-                <span class="logo-main">JSP</span>
-                <span class="logo-bracket">]</span>
+        <!-- Status badge -->
+        <div class="system-status">
+            <span class="status-dot"></span>
+            <span class="status-text">SISTEMA OPERATIVO</span>
+        </div>
+
+        <!-- Welcome hero -->
+        <div class="hero-section">
+            <div class="hero-logo">
+                <span class="logo-bracket">[</span>JSP<span class="logo-bracket">]</span>
             </div>
-            <h1 class="brand-title">JOI <span class="accent-cyan">SECURE</span> PASS</h1>
-            <p class="brand-subtitle">Sistema Biométrico de Control de Acceso</p>
-            <div class="status-indicator">
-                <span class="status-dot"></span>
-                <span class="status-text">SISTEMA OPERATIVO</span>
+            <h1 class="hero-title">Bienvenido a <span class="accent-cyan">JoiSecurePass</span></h1>
+            <p class="hero-description">
+                Plataforma de control de acceso y asistencia del personal basada en <strong>reconocimiento facial biométrico</strong>.
+                Registra entradas y salidas de forma automática, gestiona reportes y administra tu equipo desde un único sistema.
+            </p>
+            <div class="hero-features">
+                <span class="feature-tag">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 10a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/></svg>
+                    Detección en tiempo real
+                </span>
+                <span class="feature-tag">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    Acceso por roles
+                </span>
+                <span class="feature-tag">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                    Reportes y dashboards
+                </span>
             </div>
         </div>
 
-        <!-- Option Cards -->
-        <div class="options-grid">
+        <!-- Divider -->
+        <div class="mode-divider">
+            <div class="divider-line"></div>
+            <span class="divider-label">SELECCIONA EL MODO DE OPERACIÓN</span>
+            <div class="divider-line"></div>
+        </div>
 
-            <!-- Terminal de Fichaje -->
-            <a href="{% url 'record_attendance' %}" class="option-card card-terminal">
-                <div class="card-glow glow-cyan"></div>
-                <div class="card-icon icon-cyan">
+        <!-- Action buttons -->
+        <div class="actions-row">
+
+            <a href="{% url 'record_attendance' %}" class="action-btn btn-terminal">
+                <div class="btn-glow glow-cyan"></div>
+                <div class="btn-icon icon-cyan">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M15 10a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
                         <path d="M3 7V5a2 2 0 0 1 2-2h2"/>
@@ -44,34 +66,30 @@
                         <path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
                     </svg>
                 </div>
-                <span class="card-badge badge-cyan">MODO TERMINAL</span>
-                <h2 class="card-title title-cyan">Terminal de Fichaje</h2>
-                <p class="card-desc">Activar cámara con reconocimiento facial automático para registrar entradas y salidas del personal.</p>
-                <div class="card-action action-cyan">
-                    <span>Iniciar Terminal</span>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                <div class="btn-text">
+                    <span class="btn-label label-cyan">Activar Terminal de Fichaje</span>
+                    <span class="btn-hint">Inicia la cámara con detección facial automática</span>
                 </div>
+                <svg class="btn-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </a>
 
-            <!-- Portal de Gestión -->
-            <a href="{% url 'login' %}" class="option-card card-login">
-                <div class="card-glow glow-pink"></div>
-                <div class="card-icon icon-pink">
+            <a href="{% url 'login' %}" class="action-btn btn-login">
+                <div class="btn-glow glow-pink"></div>
+                <div class="btn-icon icon-pink">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
                         <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                     </svg>
                 </div>
-                <span class="card-badge badge-pink">PORTAL ADMIN</span>
-                <h2 class="card-title title-pink">Portal de Gestión</h2>
-                <p class="card-desc">Acceder al panel de administración para gestionar personal, reportes y configuración del sistema.</p>
-                <div class="card-action action-pink">
-                    <span>Iniciar Sesión</span>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                <div class="btn-text">
+                    <span class="btn-label label-pink">Iniciar Sesión como Operador</span>
+                    <span class="btn-hint">Accede al panel de gestión y reportes</span>
                 </div>
+                <svg class="btn-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </a>
 
         </div>
+
     </div>
 </div>
 {% endblock %}

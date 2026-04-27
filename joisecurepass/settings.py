@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "attendance",
     "dashboards",
     'channels',
+    'core',
 ]
 
 MIDDLEWARE = [

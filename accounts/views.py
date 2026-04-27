@@ -18,9 +18,6 @@ try:
 except ImportError:
     FACE_RECOGNITION_AVAILABLE = False
 
-def landing_page(request):
-    return render(request, 'accounts/landing_page.html')
-
 # --------------------------------------------------------------------------------------------
 
 def login_view(request):

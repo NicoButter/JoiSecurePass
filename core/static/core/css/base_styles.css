@@ -25,7 +25,10 @@ header {
     z-index: 100;
     background-color: rgba(0, 0, 0, 0.8); 
     padding: 10px 20px;
+    box-sizing: border-box; /* Add box-sizing */
     flex-wrap: nowrap;
+    border-bottom: 1px solid #1a1a1a; /* Optional slightly cleaner look */
+    backdrop-filter: blur(8px); /* Add a slight blur effect */
 }
 
 .header-banner img {
@@ -64,7 +67,10 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden; 
+    overflow: auto; /* Changed to auto so content is scrollable if it overflows */
+    padding-top: 120px; /* Accounts for fixed header */
+    padding-bottom: 60px; /* Accounts for fixed footer */
+    box-sizing: border-box; /* Includes padding in height calculation */
 }
 
 footer {
@@ -76,6 +82,8 @@ footer {
     background-color: rgba(0, 0, 0, 0.8); 
     padding: 10px 0;
     text-align: center;
+    border-top: 1px solid #1a1a1a;
+    backdrop-filter: blur(8px);
 }
 
 footer p {
